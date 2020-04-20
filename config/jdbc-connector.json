@@ -1,0 +1,14 @@
+{
+  "name": "jdbc-sink-connector",
+  "config": {
+    "connector.class": "com.ibm.eventstreams.connect.jdbcsink.JDBCSinkConnector",
+    "tasks.max": "1",
+    "topics": "kafka_test",
+    "connection.url": "jdbc:postgresql://127.0.0.1:5432/postgres",
+    "connection.user": "newuser",
+    "connection.password": "test",
+    "connection.ds.pool.size": 5,
+    "insert.mode.databaselevel": true,
+    "table.name.format": "company"
+  }
+}
