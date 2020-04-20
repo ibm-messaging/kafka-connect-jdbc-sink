@@ -39,7 +39,7 @@ public class RelationalDatabase implements IDatabase {
         // TODO: find SQL statement creator by type and configure writer
         this.datasource = datasource;
         this.type = type;
-        this.writer = new JDBCWriter(true, this.datasource);;
+        this.writer = new JDBCWriter(this.datasource);;
     }
 
     @Override public Connection getConnection() throws SQLException {

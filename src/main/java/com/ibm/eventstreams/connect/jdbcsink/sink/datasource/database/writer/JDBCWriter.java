@@ -32,8 +32,6 @@ public class JDBCWriter implements IDatabaseWriter{
 
     private static Gson gson = new Gson();
 
-    private final boolean isInsertModeDatabaseLevelEnabled;
-
     private static final Logger log = LoggerFactory.getLogger(JDBCSinkTask.class);
 
     private final IDataSource datasource;
@@ -42,8 +40,7 @@ public class JDBCWriter implements IDatabaseWriter{
     //  Comma separated columns, values and relationships - nested json
     private static final String INSERT_STATEMENT = "INSERT INTO %s(%, %s, %s) VALUES (%s, %s, %s)";
 
-    public JDBCWriter(final boolean insertModeDatabaseLevel, final IDataSource datasource) {
-        this.isInsertModeDatabaseLevelEnabled = insertModeDatabaseLevel;
+    public JDBCWriter(final IDataSource datasource) {
         this.datasource = datasource;
     }
 
@@ -91,6 +88,7 @@ public class JDBCWriter implements IDatabaseWriter{
         //  under certain circumstances.
         try (Connection connection = this.datasource.getConnection()) {
             connection.setAutoCommit(false);
+
 
             log.warn("TABLE EXISTS = " + checkTable("company") + " TABLE EXISTS ");
             log.warn("TABLE EXISTS2 = " + checkTable("company2") + " TABLE EXISTS2 ");

@@ -29,7 +29,6 @@ import java.beans.PropertyVetoException;
 
 public class DatabaseFactory {
     private static final Logger log = LoggerFactory.getLogger(JDBCSinkTask.class);
-    private boolean databaseInsertMode; // TODO: handle this
 
     public IDatabase makeDatabase(JDBCSinkConfig config) throws PropertyVetoException {
 
@@ -60,8 +59,6 @@ public class DatabaseFactory {
                 jdbcUrl,
                 databaseDriver
         ).withInitialPoolSize(poolSize).build();
-
-        databaseInsertMode = config.getBoolean(JDBCSinkConfig.CONFIG_NAME_INSERT_MODE_DATABASELEVEL);
 
         return database.create(datasource);
     }
