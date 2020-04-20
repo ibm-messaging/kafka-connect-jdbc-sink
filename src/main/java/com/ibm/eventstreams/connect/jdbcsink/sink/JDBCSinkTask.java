@@ -27,7 +27,6 @@ import org.apache.kafka.connect.sink.SinkTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.beans.PropertyVetoException;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Map;
@@ -55,7 +54,7 @@ public class JDBCSinkTask extends SinkTask {
         DatabaseFactory databaseFactory = new DatabaseFactory();
         try {
             this.database = databaseFactory.makeDatabase(this.config);
-        } catch (PropertyVetoException e) {
+        } catch (Exception e) {
             log.error("Failed to build the database {} ", e);
             e.printStackTrace();
             // TODO: do something else here?

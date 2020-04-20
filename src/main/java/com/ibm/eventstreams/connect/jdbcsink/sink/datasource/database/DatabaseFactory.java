@@ -30,7 +30,7 @@ import java.beans.PropertyVetoException;
 public class DatabaseFactory {
     private static final Logger log = LoggerFactory.getLogger(JDBCSinkTask.class);
 
-    public IDatabase makeDatabase(JDBCSinkConfig config) throws PropertyVetoException {
+    public IDatabase makeDatabase(JDBCSinkConfig config) {
 
         log.warn("DatabaseFactory: makeDatabase");
 
@@ -53,12 +53,17 @@ public class DatabaseFactory {
         final String password = config.getPassword(JDBCSinkConfig.CONFIG_NAME_CONNECTION_PASSWORD).toString();
         final int poolSize = config.getInt(JDBCSinkConfig.CONFIG_NAME_CONNECTION_DS_POOL_SIZE);
 
-        IDataSource dataSource = new PooledDataSource.Builder(
-                username,
-                password,
-                jdbcUrl,
-                databaseDriver
-        ).withInitialPoolSize(poolSize).build();
+        IDataSource dataSource = null;
+        try {
+            dataSource = new PooledDataSource.Builder(
+                    username,
+                    password,
+                    jdbcUrl,
+                    databaseDriver
+            ).withInitialPoolSize(poolSize).build();
+        } catch (PropertyVetoException e) {
+            log.error(e.toString());
+        }
 
         return databaseType.create(dataSource);
     }

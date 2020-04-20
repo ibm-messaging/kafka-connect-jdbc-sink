@@ -23,7 +23,6 @@ import com.ibm.eventstreams.connect.jdbcsink.sink.datasource.IDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.beans.PropertyVetoException;
 import java.util.EnumSet;
 
 /**
@@ -33,18 +32,18 @@ import java.util.EnumSet;
 public enum DatabaseType {
 
     db2("com.ibm.db2.jcc.DB2Driver") {
-        @Override public IDatabase create(IDataSource datasource) throws PropertyVetoException {
-            return new RelationalDatabase(this, datasource);
+        @Override public IDatabase create(IDataSource dataSource) {
+            return new RelationalDatabase(this, dataSource);
         }
     },
     postgresql("org.postgresql.Driver") {
-        @Override public IDatabase create(IDataSource datasource) throws PropertyVetoException {
-            return new RelationalDatabase(this, datasource);
+        @Override public IDatabase create(IDataSource dataSource) {
+            return new RelationalDatabase(this, dataSource);
         }
     },
     mysql("com.mysql.jdbc.Driver") {
-        @Override public IDatabase create(IDataSource datasource) throws PropertyVetoException {
-            return new RelationalDatabase(this, datasource);
+        @Override public IDatabase create(IDataSource dataSource) {
+            return new RelationalDatabase(this, dataSource);
         }
     };
 
@@ -82,7 +81,7 @@ public enum DatabaseType {
         return type;
     }
 
-    public abstract IDatabase create(IDataSource datasource) throws PropertyVetoException;
+    public abstract IDatabase create(IDataSource dataSource);
 
     public String getDriver() {
         return driver;
