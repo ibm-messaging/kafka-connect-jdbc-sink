@@ -66,7 +66,7 @@ kafka-topics --create --topic kafka_test --partitions 3 --replication-factor 1 -
 
 Setting up this database involves creating the database, creating user with password and proper access privileges.
 
-Below are some of the commands involved in setting up databases:
+Below are some of the commands involved in setting up databases using postgresql:
 
 ```bash
 create user {username};
