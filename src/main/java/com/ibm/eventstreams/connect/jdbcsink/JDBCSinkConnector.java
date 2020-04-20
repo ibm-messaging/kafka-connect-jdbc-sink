@@ -18,8 +18,6 @@
 
 package com.ibm.eventstreams.connect.jdbcsink;
 
-import com.ibm.eventstreams.connect.jdbcsink.sink.JDBCSinkConfig;
-import com.ibm.eventstreams.connect.jdbcsink.sink.JDBCSinkTask;
 import org.apache.kafka.common.config.Config;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.connector.Task;

@@ -16,15 +16,11 @@
  *
  */
 
-package com.ibm.eventstreams.connect.jdbcsink.sink.datasource;
+package com.ibm.eventstreams.connect.jdbcsink.database;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import com.ibm.eventstreams.connect.jdbcsink.database.writer.IDatabaseWriter;
 
-/**
- * Exposes needed methods from the JDBC ecosystem such
- * as C3P0 connection pooling.
- */
-public interface IDataSource {
-    Connection getConnection() throws SQLException;
+public interface IDatabase {
+    IDatabaseWriter getWriter();
+    DatabaseType getType();
 }

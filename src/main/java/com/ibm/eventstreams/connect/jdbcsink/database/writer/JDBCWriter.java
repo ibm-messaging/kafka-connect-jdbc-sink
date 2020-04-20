@@ -16,11 +16,11 @@
  *
  */
 
-package com.ibm.eventstreams.connect.jdbcsink.sink.datasource.database.writer;
+package com.ibm.eventstreams.connect.jdbcsink.database.writer;
 
 import com.google.gson.Gson;
-import com.ibm.eventstreams.connect.jdbcsink.sink.JDBCSinkTask;
-import com.ibm.eventstreams.connect.jdbcsink.sink.datasource.IDataSource;
+import com.ibm.eventstreams.connect.jdbcsink.JDBCSinkTask;
+import com.ibm.eventstreams.connect.jdbcsink.database.datasource.IDataSource;
 import org.apache.kafka.connect.sink.SinkRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

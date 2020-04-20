@@ -16,7 +16,7 @@
  *
  */
 
-package com.ibm.eventstreams.connect.jdbcsink.sink;
+package com.ibm.eventstreams.connect.jdbcsink;
 
 import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.config.ConfigDef;

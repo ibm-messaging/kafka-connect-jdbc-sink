@@ -16,12 +16,12 @@
  *
  */
 
-package com.ibm.eventstreams.connect.jdbcsink.sink.datasource.database;
+package com.ibm.eventstreams.connect.jdbcsink.database;
 
-import com.ibm.eventstreams.connect.jdbcsink.sink.JDBCSinkConfig;
-import com.ibm.eventstreams.connect.jdbcsink.sink.JDBCSinkTask;
-import com.ibm.eventstreams.connect.jdbcsink.sink.datasource.IDataSource;
-import com.ibm.eventstreams.connect.jdbcsink.sink.datasource.PooledDataSource;
+import com.ibm.eventstreams.connect.jdbcsink.JDBCSinkConfig;
+import com.ibm.eventstreams.connect.jdbcsink.JDBCSinkTask;
+import com.ibm.eventstreams.connect.jdbcsink.database.datasource.IDataSource;
+import com.ibm.eventstreams.connect.jdbcsink.database.datasource.PooledDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

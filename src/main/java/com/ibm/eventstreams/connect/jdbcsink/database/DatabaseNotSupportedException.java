@@ -16,12 +16,10 @@
  *
  */
 
-package com.ibm.eventstreams.connect.jdbcsink.sink.datasource.database;
+package com.ibm.eventstreams.connect.jdbcsink.database;
 
-import com.ibm.eventstreams.connect.jdbcsink.sink.datasource.IDataSource;
-import com.ibm.eventstreams.connect.jdbcsink.sink.datasource.database.writer.IDatabaseWriter;
-
-public interface IDatabase {
-    IDatabaseWriter getWriter();
-    DatabaseType getType();
+public class DatabaseNotSupportedException extends RuntimeException {
+    public DatabaseNotSupportedException(String message){
+        super(message);
+    }
 }

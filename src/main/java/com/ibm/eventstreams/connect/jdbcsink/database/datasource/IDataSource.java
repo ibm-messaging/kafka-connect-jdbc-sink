@@ -16,16 +16,15 @@
  *
  */
 
-package com.ibm.eventstreams.connect.jdbcsink.sink.datasource.database.writer;
+package com.ibm.eventstreams.connect.jdbcsink.database.datasource;
 
-import org.apache.kafka.connect.sink.SinkRecord;
-
+import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Collection;
 
-public interface IDatabaseWriter {
-
-    // TODO: handle upserting / idempotency to prevent insertion of duplicate records
-    boolean insert(final String tableName, final Collection<SinkRecord> records) throws SQLException;
-
+/**
+ * Exposes needed methods from the JDBC ecosystem such
+ * as C3P0 connection pooling.
+ */
+public interface IDataSource {
+    Connection getConnection() throws SQLException;
 }

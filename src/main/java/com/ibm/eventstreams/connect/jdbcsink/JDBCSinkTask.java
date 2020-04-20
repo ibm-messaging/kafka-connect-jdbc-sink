@@ -16,10 +16,10 @@
  *
  */
 
-package com.ibm.eventstreams.connect.jdbcsink.sink;
+package com.ibm.eventstreams.connect.jdbcsink;
 
-import com.ibm.eventstreams.connect.jdbcsink.sink.datasource.database.DatabaseFactory;
-import com.ibm.eventstreams.connect.jdbcsink.sink.datasource.database.IDatabase;
+import com.ibm.eventstreams.connect.jdbcsink.database.DatabaseFactory;
+import com.ibm.eventstreams.connect.jdbcsink.database.IDatabase;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.connect.connector.Connector;
