@@ -16,10 +16,10 @@
  *
  */
 
-package com.ibm.eventstreams.connect.jdbcsink.database;
+package com.ibm.eventstreams.connect.jdbcsink.database.exception;
 
-public class DatabaseNotSupportedException extends RuntimeException {
-    public DatabaseNotSupportedException(String message){
+public class JdbcDriverClassNotFoundException extends RuntimeException {
+    public JdbcDriverClassNotFoundException(String message){
         super(message);
     }
 }

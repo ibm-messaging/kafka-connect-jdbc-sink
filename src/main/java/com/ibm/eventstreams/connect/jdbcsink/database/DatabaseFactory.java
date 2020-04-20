@@ -22,6 +22,8 @@ import com.ibm.eventstreams.connect.jdbcsink.JDBCSinkConfig;
 import com.ibm.eventstreams.connect.jdbcsink.JDBCSinkTask;
 import com.ibm.eventstreams.connect.jdbcsink.database.datasource.IDataSource;
 import com.ibm.eventstreams.connect.jdbcsink.database.datasource.PooledDataSource;
+import com.ibm.eventstreams.connect.jdbcsink.database.exception.DatabaseNotSupportedException;
+import com.ibm.eventstreams.connect.jdbcsink.database.exception.JdbcDriverClassNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +49,7 @@ public class DatabaseFactory {
             Class.forName(databaseDriver);
         } catch (ClassNotFoundException cnf) {
             log.error(databaseType.name() + " JDBC driver not found", cnf);
+            throw new JdbcDriverClassNotFoundException(databaseType.name());
         }
 
         final String username = config.getString(JDBCSinkConfig.CONFIG_NAME_CONNECTION_USER);
