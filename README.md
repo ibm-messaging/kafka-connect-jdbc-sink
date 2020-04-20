@@ -64,6 +64,20 @@ kafka-topics --create --topic kafka_test --partitions 3 --replication-factor 1 -
 
 2. Set up a JDBC database with an accessible URL and Port Number as well as a user with read/write privileges.
 
+Setting up this database involves creating the database, creating user with password and proper access privileges.
+
+Below are some of the commands involved in setting up databases using postgresql:
+
+```bash
+create user {username};
+create database {dbname};
+grant all privileges on database {dbname} to {username};
+
+\l - list databse
+\du is to verify user roles
+\c to select database
+```
+
 3. Open up the `config\jdbc-connector.json` file using the command below:
 
 ```bash
@@ -124,7 +138,7 @@ connect-distributed connect-distributed.properties
 curl -s -X POST -H 'Content-Type: application/json' --data @config/jdbc-connector.json http://localhost:8083/connectors
 ```
 
-You can verify that your connector was properly registered by going to `http://localhost:8083/connector` which 
+You can verify that your connector was properly registered by going to `http://localhost:8083/connectors` which 
 should return a full list of available connectors.  This JSON connector profile will be propegated to all workers
 across the distributed system.  After following these steps your connector will now run in distributed mode.
 
@@ -151,6 +165,8 @@ The `15` above represents the key and the JSON represents the value.
 
 3. Open up the command-line client of your JDBC database and verify that a record has been added into the target database table.
 If the database table did not exist prior to this, it would have been created by this process.
+
+Be sure to target the proper database by using `\c <database_name>` or `USE <database_name>;`.
 
 ```sql
 select * from company; 
