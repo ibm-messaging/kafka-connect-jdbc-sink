@@ -29,16 +29,16 @@ import java.sql.SQLException;
  */
 public class PooledDataSource implements IDataSource {
 
-    private ComboPooledDataSource datasource;
+    private ComboPooledDataSource dataSource;
 
     private PooledDataSource(
             ComboPooledDataSource dataSource
     )  {
-        this.datasource = dataSource;
+        this.dataSource = dataSource;
     }
 
     @Override public Connection getConnection() throws SQLException {
-        return datasource.getConnection();
+        return dataSource.getConnection();
     }
 
     public static class Builder {

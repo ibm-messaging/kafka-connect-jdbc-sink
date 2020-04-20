@@ -36,31 +36,31 @@ public class DatabaseFactory {
 
         String jdbcUrl = config.getString(JDBCSinkConfig.CONFIG_NAME_CONNECTION_URL);
 
-        DatabaseType database = DatabaseType.fromJdbcUrl(jdbcUrl);
+        DatabaseType databaseType = DatabaseType.fromJdbcUrl(jdbcUrl);
 
-        if (database == null) {
+        if (databaseType == null) {
             throw new DatabaseNotSupportedException("Check " + jdbcUrl);
         }
 
-        String databaseDriver = database.getDriver();
+        String databaseDriver = databaseType.getDriver();
         try {
             Class.forName(databaseDriver);
         } catch (ClassNotFoundException cnf) {
-            log.error(database.name() + " JDBC driver not found", cnf);
+            log.error(databaseType.name() + " JDBC driver not found", cnf);
         }
 
         final String username = config.getString(JDBCSinkConfig.CONFIG_NAME_CONNECTION_USER);
         final String password = config.getPassword(JDBCSinkConfig.CONFIG_NAME_CONNECTION_PASSWORD).toString();
         final int poolSize = config.getInt(JDBCSinkConfig.CONFIG_NAME_CONNECTION_DS_POOL_SIZE);
 
-        IDataSource datasource = new PooledDataSource.Builder(
+        IDataSource dataSource = new PooledDataSource.Builder(
                 username,
                 password,
                 jdbcUrl,
                 databaseDriver
         ).withInitialPoolSize(poolSize).build();
 
-        return database.create(datasource);
+        return databaseType.create(dataSource);
     }
 
 }
