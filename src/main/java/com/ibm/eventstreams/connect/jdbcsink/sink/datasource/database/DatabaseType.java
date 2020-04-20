@@ -30,7 +30,6 @@ import java.util.EnumSet;
  * JDBC drivers and urls: https://www.ibm.com/support/knowledgecenter/en/SSEP7J_10.1.1/com.ibm.swg.ba.cognos.vvm_ag_guide.10.1.1.doc/c_ag_samjdcurlform.html
  */
 public enum DatabaseType {
-
     db2("com.ibm.db2.jcc.DB2Driver") {
         @Override public IDatabase create(IDataSource dataSource) {
             return new RelationalDatabase(this, dataSource);
@@ -47,6 +46,7 @@ public enum DatabaseType {
         }
     };
 
+    private static final Logger log = LoggerFactory.getLogger(JDBCSinkConnector.class);
     private String driver;
 
     DatabaseType(String value) {
@@ -60,7 +60,6 @@ public enum DatabaseType {
      * @return Optional<DatabaseType>
      */
     public static DatabaseType fromJdbcUrl(String connectionUrl) {
-        final Logger log = LoggerFactory.getLogger(JDBCSinkConnector.class);
         final int STRING_SPLIT_LIMIT = 3;
         final String JDBC_URL_DELIMITER = ":";
 
@@ -71,6 +70,7 @@ public enum DatabaseType {
         if (urlSegments.length == STRING_SPLIT_LIMIT) {
             String matchedDatabaseType = urlSegments[STRING_SPLIT_LIMIT - 2];
             log.info("matchedType = " + matchedDatabaseType);
+
             type = EnumSet.allOf(DatabaseType.class).stream()
                     .filter(t -> t.name().toLowerCase().equals(matchedDatabaseType))
                     .findFirst()
