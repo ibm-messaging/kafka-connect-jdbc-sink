@@ -16,11 +16,11 @@
  *
  */
 
-package com.ibm.eventstreams.connect.jdbcsink.sink.datasource.database;
+package com.ibm.eventstreams.connect.jdbcsink.database;
 
-import com.ibm.eventstreams.connect.jdbcsink.sink.datasource.IDataSource;
-import com.ibm.eventstreams.connect.jdbcsink.sink.datasource.database.writer.IDatabaseWriter;
-import com.ibm.eventstreams.connect.jdbcsink.sink.datasource.database.writer.JDBCWriter;
+import com.ibm.eventstreams.connect.jdbcsink.database.datasource.IDataSource;
+import com.ibm.eventstreams.connect.jdbcsink.database.writer.IDatabaseWriter;
+import com.ibm.eventstreams.connect.jdbcsink.database.writer.JDBCWriter;
 
 public class RelationalDatabase implements IDatabase {
 

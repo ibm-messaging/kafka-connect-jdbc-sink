@@ -16,10 +16,10 @@
  *
  */
 
-package com.ibm.eventstreams.connect.jdbcsink.sink.datasource.database;
+package com.ibm.eventstreams.connect.jdbcsink.database;
 
 import com.ibm.eventstreams.connect.jdbcsink.JDBCSinkConnector;
-import com.ibm.eventstreams.connect.jdbcsink.sink.datasource.IDataSource;
+import com.ibm.eventstreams.connect.jdbcsink.database.datasource.IDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

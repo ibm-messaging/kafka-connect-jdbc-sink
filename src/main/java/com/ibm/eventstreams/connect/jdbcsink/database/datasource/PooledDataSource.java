@@ -16,7 +16,7 @@
  *
  */
 
-package com.ibm.eventstreams.connect.jdbcsink.sink.datasource;
+package com.ibm.eventstreams.connect.jdbcsink.database.datasource;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 

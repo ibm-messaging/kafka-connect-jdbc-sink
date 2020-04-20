@@ -16,10 +16,16 @@
  *
  */
 
-package com.ibm.eventstreams.connect.jdbcsink.sink.datasource.database;
+package com.ibm.eventstreams.connect.jdbcsink.database.writer;
 
-public class DatabaseNotSupportedException extends RuntimeException {
-    public DatabaseNotSupportedException(String message){
-        super(message);
-    }
+import org.apache.kafka.connect.sink.SinkRecord;
+
+import java.sql.SQLException;
+import java.util.Collection;
+
+public interface IDatabaseWriter {
+
+    // TODO: handle upserting / idempotency to prevent insertion of duplicate records
+    boolean insert(final String tableName, final Collection<SinkRecord> records) throws SQLException;
+
 }
