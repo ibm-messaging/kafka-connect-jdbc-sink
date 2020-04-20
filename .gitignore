@@ -17,3 +17,6 @@ target/
 
 # Visual Studio Code
 .vscode/
+
+# Non Source Code
+config/
