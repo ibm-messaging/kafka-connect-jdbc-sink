@@ -22,12 +22,13 @@ import com.ibm.eventstreams.connect.jdbcsink.sink.datasource.database.DatabaseFa
 import com.ibm.eventstreams.connect.jdbcsink.sink.datasource.database.IDatabase;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.connect.connector.Connector;
 import org.apache.kafka.connect.sink.SinkRecord;
 import org.apache.kafka.connect.sink.SinkTask;
+import org.apache.kafka.connect.sink.SinkTaskContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.beans.PropertyVetoException;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Map;
@@ -55,10 +56,10 @@ public class JDBCSinkTask extends SinkTask {
         DatabaseFactory databaseFactory = new DatabaseFactory();
         try {
             this.database = databaseFactory.makeDatabase(this.config);
-        } catch (PropertyVetoException e) {
+        } catch (Exception e) {
             log.error("Failed to build the database {} ", e);
             e.printStackTrace();
-            // TODO: do something else here?
+            throw e;
         }
 
         log.trace("[{}]  Exit {}.start", Thread.currentThread().getId(), classname);

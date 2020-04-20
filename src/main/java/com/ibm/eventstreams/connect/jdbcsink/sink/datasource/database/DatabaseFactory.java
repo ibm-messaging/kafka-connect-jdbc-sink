@@ -29,41 +29,43 @@ import java.beans.PropertyVetoException;
 
 public class DatabaseFactory {
     private static final Logger log = LoggerFactory.getLogger(JDBCSinkTask.class);
-    private boolean databaseInsertMode; // TODO: handle this
 
-    public IDatabase makeDatabase(JDBCSinkConfig config) throws PropertyVetoException {
+    public IDatabase makeDatabase(JDBCSinkConfig config) {
 
         log.warn("DatabaseFactory: makeDatabase");
 
         String jdbcUrl = config.getString(JDBCSinkConfig.CONFIG_NAME_CONNECTION_URL);
 
-        DatabaseType database = DatabaseType.fromJdbcUrl(jdbcUrl);
+        DatabaseType databaseType = DatabaseType.fromJdbcUrl(jdbcUrl);
 
-        if (database == null) {
+        if (databaseType == null) {
             throw new DatabaseNotSupportedException("Check " + jdbcUrl);
         }
 
-        String databaseDriver = database.getDriver();
+        String databaseDriver = databaseType.getDriver();
         try {
             Class.forName(databaseDriver);
         } catch (ClassNotFoundException cnf) {
-            log.error(database.name() + " JDBC driver not found", cnf);
+            log.error(databaseType.name() + " JDBC driver not found", cnf);
         }
 
         final String username = config.getString(JDBCSinkConfig.CONFIG_NAME_CONNECTION_USER);
         final String password = config.getPassword(JDBCSinkConfig.CONFIG_NAME_CONNECTION_PASSWORD).toString();
         final int poolSize = config.getInt(JDBCSinkConfig.CONFIG_NAME_CONNECTION_DS_POOL_SIZE);
 
-        IDataSource datasource = new PooledDataSource.Builder(
-                username,
-                password,
-                jdbcUrl,
-                databaseDriver
-        ).withInitialPoolSize(poolSize).build();
+        IDataSource dataSource = null;
+        try {
+            dataSource = new PooledDataSource.Builder(
+                    username,
+                    password,
+                    jdbcUrl,
+                    databaseDriver
+            ).withInitialPoolSize(poolSize).build();
+        } catch (PropertyVetoException e) {
+            log.error(e.toString());
+        }
 
-        databaseInsertMode = config.getBoolean(JDBCSinkConfig.CONFIG_NAME_INSERT_MODE_DATABASELEVEL);
-
-        return database.create(datasource);
+        return databaseType.create(dataSource);
     }
 
 }
