@@ -78,6 +78,24 @@ grant all privileges on database {dbname} to {username};
 \c to select database
 ```
 
+Below are some of the commands involved in setting up databases using db2 using a docker image:
+
+```bash
+1. docker network create DB2net
+2. mkdir db2
+3. cd db2
+4. docker run -it -d --name mydb2 --privileged=true -p 50000:50000 -e LICENSE=accept -e DB2INST1_PASSWORD=<Access Password> -e DBNAME=db2 -v "$PWD":/database --network DB2net ibmcom/db2
+5. docker logs -f mydb2
+	# make sure all 4 tasks are completed and
+	# (*) All databases are now active
+6. docker exec -it mydb2 bash -c "su - db2inst1"
+7. db2
+8. create db kafka_test
+9. connect to kafka_test
+10. list tables
+11. select * from company
+```
+
 3. Open up the `config\jdbc-connector.json` file using the command below:
 
 ```bash
