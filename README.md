@@ -96,6 +96,9 @@ Below are some of the commands involved in setting up databases using db2 using 
 11. select * from company
 ```
 
+Download the dc2jcc.jar file from the following url: https://www.ibm.com/support/pages/db2-jdbc-driver-versions-and-downloads and place it into the jar classpath `/usr/local/share/java/`.
+
+
 3. Open up the `config\jdbc-connector.json` file using the command below:
 
 ```bash
@@ -162,24 +165,19 @@ across the distributed system.  After following these steps your connector will 
 
 ## Testing
 
-After completing the installation and configuration steps above and starting the Kafka Connect service in either standalone
-or distributed mode.
-
-1. Run a kafka producer using key/value pair-based messaging with a `:` key separator  by entering the following command:
+1. Run a kafka producer using the following value.schema by entering the following command:
 
 ```shell
-kafka-console-producer --broker-list localhost:9092 --topic kafka_test --property "parse.key=true" --property "key.separator=:"
+kafka-console-producer --broker-list localhost:9092 --topic kafka_test
 ```
 
-This will allow you to pass a key/value in kafka separated by a `:` to delimit the values.
+The console producer will now wait for the output.
 
-2. Enter a test value on the kafka producer using a key/value pair separated by a `:` as follows:
+2. Copy the following record into the producer terminal:
 
 ```shell
-15:"{\"id\": \"5\", \"name\": \"myname\"}"
+{"schema": {"type": "struct","fields": [{"type": "string","optional": false,"field": "Name"}, {"type": "string","optional": false,"field": "company"}],"optional": false,"name": "Person"},"payload": {"Name": "Roy Jones","company": "General Motors"}}
 ```
-
-The `15` above represents the key and the JSON represents the value.
 
 3. Open up the command-line client of your JDBC database and verify that a record has been added into the target database table.
 If the database table did not exist prior to this, it would have been created by this process.
@@ -187,26 +185,25 @@ If the database table did not exist prior to this, it would have been created by
 Be sure to target the proper database by using `\c <database_name>` or `USE <database_name>;`.
 
 ```sql
-select * from company; 
+select * from company;
 ```
 
 4. You should be able to see your newly created record added to this database table as follows:
 
 ```
- id | key  |   timestamp   |                  value                  
-----+------+---------------+-----------------------------------------
-  1 | 15   | 1587358744169 | "{\"id\": \"5\", \"name\": \"myname\"}"
+ id |   timestamp   |   name    |    company     
+----+------+---------------+-----------+----------------
+  1 | 1587969949600 | Roy Jones |  General Motors
 ```
-
-The initial release only stores values in a key, timestamp, value format.  Future releases will parse the JSON into individual fields and 
-use AVRO schemas to enforce a dataformat and build the appropriate database tables to store the data in a parsed format.
 
 
 ## Issues and contributions
+
 For issues relating specifically to this connector, please use the [GitHub issue tracker](https://github.com/ibm-messaging/kafka-connect-jdbc-sink/issues). If you do want to submit a Pull Request related to this connector, please read the [contributing guide](CONTRIBUTING.md) first to understand how to sign your commits.
 
 
 ## License
+
 Copyright 2020 IBM Corporation
 
 Licensed under the Apache License, Version 2.0 (the "License");
