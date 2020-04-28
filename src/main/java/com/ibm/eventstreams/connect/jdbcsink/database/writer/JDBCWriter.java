@@ -103,6 +103,7 @@ public class JDBCWriter implements IDatabaseWriter{
                 if(!rowExists){
                     String ALTER_STATEMENT = "ALTER TABLE %s ADD %s %s;";
                     log.warn("alter Statement = " + ALTER_STATEMENT);
+                    // TODO: Replace VARCHAR with fieldType above
                     String createQuery = String.format(ALTER_STATEMENT, tableName, fieldName, "VARCHAR");
                     statement.execute(createQuery);
                     log.warn("ALTER_STATEMENT = " + ALTER_STATEMENT);
@@ -182,7 +183,9 @@ public class JDBCWriter implements IDatabaseWriter{
                 try {
                     ArrayList<String> params = processSchema(record.valueSchema(), tableName);
                     ArrayList<String> fields = aggregateParams(params, recordStruct);
-                    final String finalQuery = String.format(INSERT_STATEMENT, tableName, String.join(", ", params), recordKey, recordTimeStamp, String.join("', '", fields));
+                    String dynamicParams = String.join(", ", params);
+                    String dynamicFields = String.join("', '", fields);
+                    final String finalQuery = String.format(INSERT_STATEMENT, tableName, dynamicParams, recordKey, recordTimeStamp, dynamicFields);
                     log.info("RECORD INSERTED");
                     statement.addBatch(finalQuery);
                     log.info("Final prepared statement: '{}' //", finalQuery);
