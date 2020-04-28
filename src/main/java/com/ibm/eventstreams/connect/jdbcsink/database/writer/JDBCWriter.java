@@ -181,11 +181,11 @@ public class JDBCWriter implements IDatabaseWriter{
                 log.warn("Record valueSchema = [" + record.valueSchema() + "]");
 
                 try {
-                    ArrayList<String> params = processSchema(record.valueSchema(), tableName);
-                    ArrayList<String> fields = aggregateParams(params, recordStruct);
-                    String dynamicParams = String.join(", ", params);
-                    String dynamicFields = String.join("', '", fields);
-                    final String finalQuery = String.format(INSERT_STATEMENT, tableName, dynamicParams, recordKey, recordTimeStamp, dynamicFields);
+                    ArrayList<String> tableFields = processSchema(record.valueSchema(), tableName);
+                    ArrayList<String> dataFields = aggregateParams(tableFields, recordStruct);
+                    String listTableFields = String.join(", ", tableFields);
+                    String listDataFields = String.join("', '", dataFields);
+                    final String finalQuery = String.format(INSERT_STATEMENT, tableName, listTableFields, recordKey, recordTimeStamp, listDataFields);
                     log.info("RECORD INSERTED");
                     statement.addBatch(finalQuery);
                     log.info("Final prepared statement: '{}' //", finalQuery);
