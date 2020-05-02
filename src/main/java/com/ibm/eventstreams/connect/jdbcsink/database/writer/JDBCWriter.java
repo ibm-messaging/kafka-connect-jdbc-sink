@@ -31,9 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 public class JDBCWriter implements IDatabaseWriter{
 
@@ -115,12 +113,12 @@ public class JDBCWriter implements IDatabaseWriter{
         return dataFields;
     }
 
-    private static Object getStructField(Object structOrMap, String fieldName) {
-        Object field;
+    private static String getStructField(Object structOrMap, String fieldName) {
+        String field;
         if (structOrMap instanceof Struct) {
-            field = ((Struct) structOrMap).get(fieldName);
+            field = ((Struct) structOrMap).get(fieldName).toString();
         } else if (structOrMap instanceof Map) {
-            field = ((Map<?, ?>) structOrMap).get(fieldName);
+            field = ((Map<?, ?>) structOrMap).get(fieldName).toString();
             if (field == null) {
                 throw new DataException(String.format("Unable to find nested field '%s'", fieldName));
             }
@@ -178,15 +176,22 @@ public class JDBCWriter implements IDatabaseWriter{
                 log.warn("Record Value = " + record.toString() + " <-- Record Value");
                 log.warn("Record headers = [" + record.headers() + "]");
                 log.warn("Record timestamp = [" + record.timestamp() + "]");
-                log.warn("Record valueSchema = [" + record.valueSchema() + "]");
+
+                log.warn(" --- Record Schema --- ");
+                log.warn(record.valueSchema().toString());
+
+                log.warn("[Record value = " + record.value() + " ]");
 
                 try {
                     ArrayList<String> tableFields = processSchema(record.valueSchema(), tableName);
                     ArrayList<String> dataFields = aggregateParams(tableFields, recordStruct);
+
                     String listTableFields = String.join(", ", tableFields);
                     String listDataFields = String.join("', '", dataFields);
+
                     final String finalQuery = String.format(INSERT_STATEMENT, tableName, listTableFields, recordKey, recordTimeStamp, listDataFields);
                     log.info("RECORD INSERTED");
+
                     statement.addBatch(finalQuery);
                     log.info("Final prepared statement: '{}' //", finalQuery);
                 } catch (SQLException ex) {
