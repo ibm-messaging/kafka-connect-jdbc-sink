@@ -62,6 +62,13 @@
         </plugins>
     </build>
 
+    <repositories>
+        <repository>
+            <id>db2</id>
+            <url>https://artifacts.alfresco.com/nexus/content/repositories/public/</url>
+        </repository>
+    </repositories>
+
     <properties>
         <postgresql.version>42.2.1</postgresql.version>
         <kafka.version>2.3.1</kafka.version>
@@ -76,6 +83,19 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${postgresql.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ibm.db2.jcc</groupId>
+            <artifactId>db2jcc4</artifactId>
+            <version>10.1</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.ibm.db2.jcc</groupId>
+            <artifactId>db2-spring-framework</artifactId>
+            <version>0.0.1</version>
         </dependency>
 
         <dependency>
