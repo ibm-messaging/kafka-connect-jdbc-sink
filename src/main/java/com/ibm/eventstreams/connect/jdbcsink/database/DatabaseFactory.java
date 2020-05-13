@@ -30,11 +30,11 @@ import org.slf4j.LoggerFactory;
 import java.beans.PropertyVetoException;
 
 public class DatabaseFactory {
-    private static final Logger log = LoggerFactory.getLogger(JDBCSinkTask.class);
+    private static final Logger logger = LoggerFactory.getLogger(DatabaseFactory.class);
 
     public IDatabase makeDatabase(JDBCSinkConfig config) {
 
-        log.warn("DatabaseFactory: makeDatabase");
+        logger.warn("DatabaseFactory: makeDatabase");
 
         String jdbcUrl = config.getString(JDBCSinkConfig.CONFIG_NAME_CONNECTION_URL);
 
@@ -48,12 +48,12 @@ public class DatabaseFactory {
         try {
             Class.forName(databaseDriver);
         } catch (ClassNotFoundException cnf) {
-            log.error(databaseType.name() + " JDBC driver not found", cnf);
+            logger.error(databaseType.name() + " JDBC driver not found", cnf);
             throw new JdbcDriverClassNotFoundException(databaseType.name());
         }
 
         final String username = config.getString(JDBCSinkConfig.CONFIG_NAME_CONNECTION_USER);
-        final String password = config.getPassword(JDBCSinkConfig.CONFIG_NAME_CONNECTION_PASSWORD).toString();
+        final String password = config.getPassword(JDBCSinkConfig.CONFIG_NAME_CONNECTION_PASSWORD).value();
         final int poolSize = config.getInt(JDBCSinkConfig.CONFIG_NAME_CONNECTION_DS_POOL_SIZE);
 
         IDataSource dataSource = null;
@@ -65,7 +65,7 @@ public class DatabaseFactory {
                     databaseDriver
             ).withInitialPoolSize(poolSize).build();
         } catch (PropertyVetoException e) {
-            log.error(e.toString());
+            logger.error(e.toString());
         }
 
         return databaseType.create(dataSource);
