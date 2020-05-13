@@ -61,7 +61,18 @@
             </plugin>
         </plugins>
     </build>
-
+    <distributionManagement>
+        <repository>
+            <id>central</id>
+            <name>artifactory-artifactory-0-releases</name>
+            <url>https://artifactory-tools.tch-cluster-0143c5dd31acd8e030a1d6e0ab1380e3-0000.us-south.containers.appdomain.cloud/artifactory/libs-release</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>artifactory-artifactory-0-snapshots</name>
+            <url>https://artifactory-tools.tch-cluster-0143c5dd31acd8e030a1d6e0ab1380e3-0000.us-south.containers.appdomain.cloud/artifactory/libs-snapshot</url>
+        </snapshotRepository>
+    </distributionManagement>
     <repositories>
         <repository>
             <id>db2</id>
@@ -85,11 +96,11 @@
             <version>${postgresql.version}</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.ibm.db2/jcc -->
         <dependency>
-            <groupId>com.ibm.db2.jcc</groupId>
-            <artifactId>db2jcc4</artifactId>
-            <version>10.1</version>
-            <scope>test</scope>
+            <groupId>com.ibm.db2</groupId>
+            <artifactId>jcc</artifactId>
+            <version>11.5.0.0</version>
         </dependency>
 
         <dependency>
