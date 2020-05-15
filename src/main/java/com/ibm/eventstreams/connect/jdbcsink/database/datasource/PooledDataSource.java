@@ -28,7 +28,6 @@ import java.sql.SQLException;
  * A data source backed by a connection pool.
  */
 public class PooledDataSource implements IDataSource {
-
     private ComboPooledDataSource dataSource;
 
     private PooledDataSource(
@@ -43,22 +42,22 @@ public class PooledDataSource implements IDataSource {
 
     public static class Builder {
 
-        private ComboPooledDataSource datasource = new ComboPooledDataSource();
+        private ComboPooledDataSource dataSource = new ComboPooledDataSource();
 
         public Builder(final String username, final String password, final String jdbcUrl, final String driverClass) throws PropertyVetoException {
-            this.datasource.setDriverClass(driverClass);
-            this.datasource.setJdbcUrl(jdbcUrl);
-            this.datasource.setUser(username);
-            this.datasource.setPassword(password);
+            this.dataSource.setDriverClass(driverClass);
+            this.dataSource.setJdbcUrl(jdbcUrl);
+            this.dataSource.setUser(username);
+            this.dataSource.setPassword(password);
         }
 
         public IDataSource build() {
-            return new PooledDataSource(this.datasource);
+            return new PooledDataSource(this.dataSource);
         }
 
         // Optional configurable methods...
         public Builder withInitialPoolSize(int poolSize) {
-            this.datasource.setInitialPoolSize(poolSize);
+            this.dataSource.setInitialPoolSize(poolSize);
             return this;
         }
 

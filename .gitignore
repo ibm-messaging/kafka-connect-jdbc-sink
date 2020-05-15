@@ -20,3 +20,7 @@ target/
 
 # Non Source Code
 config/
+.mvn/
+mvnw
+mvnw.cmd
+settings.xml

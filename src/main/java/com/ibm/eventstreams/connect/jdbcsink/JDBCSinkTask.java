@@ -34,7 +34,7 @@ import java.util.Collection;
 import java.util.Map;
 
 public class JDBCSinkTask extends SinkTask {
-    private static final Logger log = LoggerFactory.getLogger(JDBCSinkTask.class);
+    private static final Logger logger = LoggerFactory.getLogger(JDBCSinkTask.class);
     private static final String classname = JDBCSinkTask.class.getName();
 
     // TODO: needs to be generic and incorporate other database types
@@ -50,19 +50,19 @@ public class JDBCSinkTask extends SinkTask {
      * @param props initial configuration
      */
     @Override public void start(Map<String, String> props) {
-        log.trace("[{}] Entry {}.start, props={}", Thread.currentThread().getId(), classname, props);
+        logger.trace("[{}] Entry {}.start, props={}", Thread.currentThread().getId(), classname, props);
         this.config = new JDBCSinkConfig(props);
 
         DatabaseFactory databaseFactory = new DatabaseFactory();
         try {
             this.database = databaseFactory.makeDatabase(this.config);
         } catch (Exception e) {
-            log.error("Failed to build the database {} ", e);
+            logger.error("Failed to build the database {} ", e);
             e.printStackTrace();
             throw e;
         }
 
-        log.trace("[{}]  Exit {}.start", Thread.currentThread().getId(), classname);
+        logger.trace("[{}]  Exit {}.start", Thread.currentThread().getId(), classname);
     }
 
     /**
@@ -79,16 +79,22 @@ public class JDBCSinkTask extends SinkTask {
         if (records.isEmpty()) {
             return;
         }
+
         final SinkRecord first = records.iterator().next();
         final int recordsCount = records.size();
-        log.info("Received {} records. First record kafka coordinates:({}-{}-{}). Writing them to the database...",
+        logger.info("Received {} records. First record kafka coordinates:({}-{}-{}). Writing them to the database...",
                 recordsCount, first.topic(), first.kafkaPartition(), first.kafkaOffset()
         );
+
+        final String tableName = config.getString(JDBCSinkConfig.CONFIG_NAME_TABLE_NAME_FORMAT);
+
+        logger.info("# of records: " + records.size());
         try {
-            final String tableName = config.getString(JDBCSinkConfig.CONFIG_NAME_TABLE_NAME_FORMAT);
             this.database.getWriter().insert(tableName, records);
-        } catch (SQLException sqle) {
-            log.warn("Write of {} records failed, remainingRetries={}", records.size(), remainingRetries, sqle);
+            logger.info(String.format("%d RECORDS PROCESSED", records.size()));
+        } catch (SQLException error) {
+            logger.error("Write of {} records failed, remainingRetries={}", recordsCount, remainingRetries, error);
+            // TODO: throw exception to cancel execution or retry?
         }
     }
 

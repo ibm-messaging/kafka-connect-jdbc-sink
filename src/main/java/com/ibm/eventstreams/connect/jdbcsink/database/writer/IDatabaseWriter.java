@@ -26,6 +26,6 @@ import java.util.Collection;
 public interface IDatabaseWriter {
 
     // TODO: handle upserting / idempotency to prevent insertion of duplicate records
-    boolean insert(final String tableName, final Collection<SinkRecord> records) throws SQLException;
+    void insert(final String tableName, final Collection<SinkRecord> records) throws SQLException;
 
 }

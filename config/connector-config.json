@@ -1,0 +1,14 @@
+{
+  "name": "jdbc-sink-connector",
+  "config": {
+    "connector.class": "com.ibm.eventstreams.connect.jdbcsink.JDBCSinkConnector",
+    "tasks.max": "1",
+    "topics": "kafka_test",
+    "connection.url": "[ssljdbcurl]",
+    "connection.user": "",
+    "connection.password": "",
+    "connection.ds.pool.size": 5,
+    "insert.mode.databaselevel": true,
+    "table.name.format": "[schema].[table]"
+  }
+}
