@@ -1,0 +1,21 @@
+/*
+ * [SCHEMA].[TABLENAME] - PACS008_CLEANSED_RTP_SCHEMA.CLEAN_RTP_FAILURE
+ */
+ 
+/*
+ * Query all records from an existing table
+ */
+ SELECT * FROM PACS008_CLEANSED_RTP_SCHEMA.CLEAN_RTP_FAILURE;
+
+/*
+ * Query N records from an existing table
+ * 
+ * SELECT * FROM PACS008_CLEANSED_RTP_SCHEMA.CLEAN_RTP_FAILURE FETCH FIRST 10 ROWS ONLY;
+ */
+
+/*
+ * Get row count in an existing table
+ * 
+ * SELECT COUNT(*) FROM PACS008_CLEANSED_RTP_SCHEMA.CLEAN_RTP_FAILURE;
+ */
+
