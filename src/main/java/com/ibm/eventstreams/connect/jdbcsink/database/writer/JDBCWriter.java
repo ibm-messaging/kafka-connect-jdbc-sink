@@ -43,18 +43,11 @@ public class JDBCWriter implements IDatabaseWriter{
         this.dataSource = dataSource;
     }
 
-    private boolean checkTable(String tableName) throws SQLException {
-
-        try (Connection connection = this.dataSource.getConnection()) {
-            connection.setAutoCommit(false);
-            String[] tableParts = tableName.split("\\.");
-            DatabaseMetaData dbm = connection.getMetaData();
-            ResultSet table = dbm.getTables(null, tableParts[0], tableParts[1], null);
-            return table.next();
-        } catch (SQLException error) {
-            logger.error(error.getMessage());
-            throw error;
-        }
+    private boolean doesTableExist(Connection connection, String tableName) throws SQLException {
+        String[] tableParts = tableName.split("\\.");
+        DatabaseMetaData dbm = connection.getMetaData();
+        ResultSet table = dbm.getTables(null, tableParts[0], tableParts[1], null);
+        return table.next();
     }
 
     // TODO: verify will work for all database flavors
@@ -76,7 +69,7 @@ public class JDBCWriter implements IDatabaseWriter{
         }
     }
 
-    public void createTable(String tableName, Schema schema, Connection connection) throws SQLException {
+    public void createTable(Connection connection, String tableName, Schema schema) throws SQLException {
 
         // TODO: verify will work for all database flavors
         final String CREATE_STATEMENT = "CREATE TABLE %s (%s)";
@@ -114,9 +107,9 @@ public class JDBCWriter implements IDatabaseWriter{
             connection = this.dataSource.getConnection();
             Statement statement = connection.createStatement();
 
-            if (!checkTable(tableName)) {
+            if (!doesTableExist(connection, tableName)) {
                 logger.info("Table not found. Creating table: " + tableName);
-                createTable(tableName, records.iterator().next().valueSchema(), connection);
+                createTable(connection, tableName, records.iterator().next().valueSchema());
             }
 
             List<String> fieldNames = records.iterator().next().valueSchema().fields().stream().map(Field::name).collect(Collectors.toList());
