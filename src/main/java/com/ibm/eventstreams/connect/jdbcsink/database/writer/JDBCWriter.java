@@ -91,6 +91,7 @@ public class JDBCWriter implements IDatabaseWriter{
         Statement statement = connection.createStatement();
         statement.execute(createQuery);
         logger.info("TABLE " + tableName + " has been created");
+        statement.close();
     }
 
     // TODO: encode maps and lists as strings
@@ -140,6 +141,7 @@ public class JDBCWriter implements IDatabaseWriter{
             }
 
             statement.executeBatch();
+            statement.close();
 
         } catch (BatchUpdateException batchUpdateException) {
             // TODO: write failed records from batch to kafka topic?
