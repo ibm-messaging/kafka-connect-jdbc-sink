@@ -63,15 +63,10 @@
     </build>
     <distributionManagement>
         <repository>
-            <id>central</id>
-            <name>artifactory-artifactory-0-releases</name>
-            <url>https://artifactory-tools.tch-cluster-0143c5dd31acd8e030a1d6e0ab1380e3-0000.us-south.containers.appdomain.cloud/artifactory/libs-release</url>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/ibm-garage-cloud/kafka-connect-jdbc-sink</url>
         </repository>
-        <snapshotRepository>
-            <id>snapshots</id>
-            <name>artifactory-artifactory-0-snapshots</name>
-            <url>https://artifactory-tools.tch-cluster-0143c5dd31acd8e030a1d6e0ab1380e3-0000.us-south.containers.appdomain.cloud/artifactory/libs-snapshot</url>
-        </snapshotRepository>
     </distributionManagement>
     <repositories>
         <repository>
