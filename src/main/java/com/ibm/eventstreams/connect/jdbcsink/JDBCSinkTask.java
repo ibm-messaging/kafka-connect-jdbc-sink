@@ -30,7 +30,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 
 public class JDBCSinkTask extends SinkTask {
@@ -90,8 +95,13 @@ public class JDBCSinkTask extends SinkTask {
 
         logger.info("# of records: " + records.size());
         try {
+            Instant start = Instant.now();
             this.database.getWriter().insert(tableName, records);
             logger.info(String.format("%d RECORDS PROCESSED", records.size()));
+            Instant finish = Instant.now();
+            long timeElapsed = Duration.between(start, finish).toMillis();  //in millis
+            logger.info(String.format("Processed '%d' records", records.size() ));
+            logger.info(String.format("Total Execution time: %d", timeElapsed));
         } catch (SQLException error) {
             logger.error("Write of {} records failed, remainingRetries={}", recordsCount, remainingRetries, error);
             // TODO: throw exception to cancel execution or retry?
