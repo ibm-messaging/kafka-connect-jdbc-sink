@@ -65,8 +65,8 @@
     <distributionManagement>
         <repository>
             <id>github</id>
-            <name>GitHub ibm-garage-cloud Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/ibm-garage-cloud/kafka-connect-jdbc-sink</url>
+            <name>GitHub ibm-messaging Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/ibm-messaging/kafka-connect-jdbc-sink</url>
         </repository>
     </distributionManagement>
     <repositories>
