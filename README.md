@@ -11,10 +11,10 @@ The connector is supplied as source code which you can easily build into a JAR f
 git@github.com:ibm-messaging/kafka-connect-jdbc-sink.git
 ```
 
-2. Change directory to the `kafka-connect-mq-sink` directory:
+2. Change directory to the `kafka-connect-jdbc-sink` directory:
 
 ```shell
-cd kafka-connect-mq-sink
+cd kafka-connect-jdbc-sink
 ```
 
 3. Build the connector using Maven:
