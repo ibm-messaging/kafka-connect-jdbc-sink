@@ -87,7 +87,7 @@ public class JDBCWriter implements IDatabaseWriter{
 
         PreparedStatement pstmt = connection.prepareStatement(CREATE_STATEMENT);
         pstmt.setString(1, tableName);
-        pstmt.setString(1, String.join(", ", fieldDatabaseDefinitions));
+        pstmt.setString(2, String.join(", ", fieldDatabaseDefinitions));
         logger.info("TABLE " + tableName + " has been created");
         pstmt.execute();
 
@@ -136,8 +136,8 @@ public class JDBCWriter implements IDatabaseWriter{
                 String listDataFields = String.join(", ", fieldValues);
 
                 pstmt.setString(1, tableName);
-                pstmt.setString(1, listTableFields);
-                pstmt.setString(1, listDataFields);
+                pstmt.setString(2, listTableFields);
+                pstmt.setString(3, listDataFields);
 
                 pstmt.addBatch();
                 logger.debug("Final prepared statement: '{}' //", INSERT_STATEMENT);
