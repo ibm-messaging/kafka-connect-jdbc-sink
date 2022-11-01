@@ -72,7 +72,7 @@ public class JDBCWriter implements IDatabaseWriter{
     public void createTable(Connection connection, String tableName, Schema schema) throws SQLException {
 
         // TODO: verify will work for all database flavors
-        final String CREATE_STATEMENT = "CREATE TABLE %s (%s)";
+        final String CREATE_STATEMENT = "CREATE TABLE ? (?)";
 
         List<String> fieldDatabaseDefinitions = new ArrayList<>();
         // TODO: verify will work for all database flavors
@@ -85,13 +85,13 @@ public class JDBCWriter implements IDatabaseWriter{
             fieldDatabaseDefinitions.add(String.format("%s %s%s", fieldName, getDatabaseFieldType(fieldType), nullable));
         }
 
-        final String createQuery = String.format(CREATE_STATEMENT, tableName, String.join(", ", fieldDatabaseDefinitions));
-        logger.info("CREATEQuery: " + createQuery);
-
-        Statement statement = connection.createStatement();
-        statement.execute(createQuery);
+        PreparedStatement pstmt = connection.prepareStatement(CREATE_STATEMENT);
+        pstmt.setString(1, tableName);
+        pstmt.setString(2, String.join(", ", fieldDatabaseDefinitions));
         logger.info("TABLE " + tableName + " has been created");
-        statement.close();
+        pstmt.execute();
+
+        pstmt.close();
     }
 
     // TODO: encode maps and lists as strings
@@ -103,10 +103,10 @@ public class JDBCWriter implements IDatabaseWriter{
     public void insert(String tableName, Collection<SinkRecord> records) throws SQLException {
         Connection connection = null;
         // TODO: need an SQL statement builder with potential variations depending on the platform
-        final String INSERT_STATEMENT = "INSERT INTO %s(%s) VALUES (%s)";
+        final String INSERT_STATEMENT = "INSERT INTO ?(?) VALUES (?)";
         try {
             connection = this.dataSource.getConnection();
-            Statement statement = connection.createStatement();
+            PreparedStatement pstmt = connection.prepareStatement(INSERT_STATEMENT);
 
             if (!doesTableExist(connection, tableName)) {
                 logger.info("Table not found. Creating table: " + tableName);
@@ -135,13 +135,16 @@ public class JDBCWriter implements IDatabaseWriter{
                 String listTableFields = String.join(", ", fieldNames);
                 String listDataFields = String.join(", ", fieldValues);
 
-                final String finalQuery = String.format(INSERT_STATEMENT, tableName, listTableFields, listDataFields);
-                statement.addBatch(finalQuery);
-                logger.debug("Final prepared statement: '{}' //", finalQuery);
+                pstmt.setString(1, tableName);
+                pstmt.setString(2, listTableFields);
+                pstmt.setString(3, listDataFields);
+
+                pstmt.addBatch();
+                logger.debug("Final prepared statement: '{}' //", INSERT_STATEMENT);
             }
 
-            statement.executeBatch();
-            statement.close();
+            pstmt.executeBatch();
+            pstmt.close();
 
         } catch (BatchUpdateException batchUpdateException) {
             // TODO: write failed records from batch to kafka topic?
