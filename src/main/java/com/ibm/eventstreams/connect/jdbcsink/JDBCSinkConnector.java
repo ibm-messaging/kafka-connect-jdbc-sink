@@ -33,7 +33,7 @@ public class JDBCSinkConnector extends SinkConnector {
     private static final Logger log = LoggerFactory.getLogger(JDBCSinkConnector.class);
 
     // TODO: check with ibm-messaging about externalizing snapshot version
-    public static String VERSION = "0.0.1-SNAPSHOT";
+    public static String VERSION = "0.0.2-SNAPSHOT";
 
     private Map<String, String> props;
 
