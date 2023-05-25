@@ -64,8 +64,6 @@ public class JDBCWriter implements IDatabaseWriter {
     }
 
     private String getPostgreSQLFieldType(Schema.Type fieldType) {
-        // Map Kafka Connect types to PostgreSQL data types
-        // Adjust this mapping based on your specific requirements
         switch (fieldType) {
             case INT8:
             case INT16:
@@ -87,8 +85,6 @@ public class JDBCWriter implements IDatabaseWriter {
     }
 
     private String getDB2FieldType(Schema.Type fieldType) {
-        // Map Kafka Connect types to DB2 data types
-        // Adjust this mapping based on your specific requirements
         switch (fieldType) {
             case INT8:
             case INT16:
@@ -110,8 +106,6 @@ public class JDBCWriter implements IDatabaseWriter {
     }
 
     private String getMySQLFieldType(Schema.Type fieldType) {
-        // Map Kafka Connect types to MySQL data types
-        // Adjust this mapping based on your specific requirements
         switch (fieldType) {
             case INT8:
             case INT16:
