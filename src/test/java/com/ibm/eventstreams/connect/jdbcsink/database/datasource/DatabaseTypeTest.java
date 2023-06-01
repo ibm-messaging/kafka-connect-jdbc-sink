@@ -16,7 +16,7 @@
  *
  */
 
-package com.ibm.eventstreams.connect.jdbcsink.sink.datasource.database;
+package com.ibm.eventstreams.connect.jdbcsink.database.datasource;
 
 import com.ibm.eventstreams.connect.jdbcsink.database.DatabaseType;
 import org.junit.jupiter.api.Nested;

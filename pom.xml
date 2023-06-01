@@ -60,6 +60,15 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <reuseForks>false</reuseForks>
+                    <forkCount>1</forkCount>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <distributionManagement>
@@ -82,7 +91,7 @@
         <jcc.version>11.5.8.0</jcc.version>
         <c3p0.version>0.9.1.2</c3p0.version>
         <junit-jupiter-engine.version>5.9.3</junit-jupiter-engine.version>
-        <mockito-core.version>5.3.1</mockito-core.version>
+        <mockito-core.version>4.11.0</mockito-core.version>
         <slf4j.version>2.0.7</slf4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>

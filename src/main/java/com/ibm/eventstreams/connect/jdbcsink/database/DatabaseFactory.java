@@ -19,7 +19,6 @@
 package com.ibm.eventstreams.connect.jdbcsink.database;
 
 import com.ibm.eventstreams.connect.jdbcsink.JDBCSinkConfig;
-import com.ibm.eventstreams.connect.jdbcsink.JDBCSinkTask;
 import com.ibm.eventstreams.connect.jdbcsink.database.datasource.IDataSource;
 import com.ibm.eventstreams.connect.jdbcsink.database.datasource.PooledDataSource;
 import com.ibm.eventstreams.connect.jdbcsink.database.exception.DatabaseNotSupportedException;

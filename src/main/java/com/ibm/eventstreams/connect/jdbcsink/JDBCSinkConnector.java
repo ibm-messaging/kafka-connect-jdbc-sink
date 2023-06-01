@@ -22,16 +22,12 @@ import org.apache.kafka.common.config.Config;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.connector.Task;
 import org.apache.kafka.connect.sink.SinkConnector;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 public class JDBCSinkConnector extends SinkConnector {
-    private static final Logger log = LoggerFactory.getLogger(JDBCSinkConnector.class);
-
     // TODO: check with ibm-messaging about externalizing snapshot version
     public static String VERSION = "0.0.2-SNAPSHOT";
 

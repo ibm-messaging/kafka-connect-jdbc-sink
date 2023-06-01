@@ -117,7 +117,7 @@ public class JDBCSinkConfig extends AbstractConfig {
         return config;
     }
 
-    protected JDBCSinkConfig(final Map<?, ?> props) {
+    public JDBCSinkConfig(final Map<?, ?> props) {
         super(config(), props);
     }
 
