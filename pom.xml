@@ -6,7 +6,7 @@
 
     <groupId>com.ibm.eventstreams.connect</groupId>
     <artifactId>kafka-connect-jdbc-sink</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <name>kafka-connect-jdbc-sink</name>
     <organization>
         <name>IBM Corporation</name>
@@ -60,6 +60,15 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <reuseForks>false</reuseForks>
+                    <forkCount>1</forkCount>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <distributionManagement>
@@ -77,10 +86,13 @@
     </repositories>
 
     <properties>
-        <postgresql.version>42.4.1</postgresql.version>
-        <kafka.version>2.3.1</kafka.version>
-        <commons-io.version>2.4</commons-io.version>
-        <kafka.connect.maven.plugin.version>0.11.1</kafka.connect.maven.plugin.version>
+        <postgresql.version>42.6.0</postgresql.version>
+        <kafka.version>3.4.0</kafka.version>
+        <jcc.version>11.5.8.0</jcc.version>
+        <c3p0.version>0.9.1.2</c3p0.version>
+        <junit-jupiter-engine.version>5.9.3</junit-jupiter-engine.version>
+        <mockito-core.version>4.11.0</mockito-core.version>
+        <slf4j.version>2.0.7</slf4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
@@ -96,7 +108,7 @@
         <dependency>
             <groupId>com.ibm.db2</groupId>
             <artifactId>jcc</artifactId>
-            <version>11.5.0.0</version>
+            <version>${jcc.version}</version>
         </dependency>
 
         <dependency>
@@ -114,28 +126,34 @@
         <dependency>
             <groupId>c3p0</groupId>
             <artifactId>c3p0</artifactId>
-            <version>0.9.1.2</version>
+            <version>${c3p0.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.6.2</version>
+            <version>${junit-jupiter-engine.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>3.3.3</version>
+            <version>${mockito-core.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.25</version>
+            <version>${slf4j.version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
         </dependency>
 
     </dependencies>

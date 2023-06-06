@@ -30,12 +30,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Map;
 
 public class JDBCSinkTask extends SinkTask {
@@ -46,7 +43,7 @@ public class JDBCSinkTask extends SinkTask {
     //  needs an interface
     private JDBCSinkConfig config;
 
-    private IDatabase database;
+    public IDatabase database;
 
     int remainingRetries; // init max retries via config.maxRetries ...
 
