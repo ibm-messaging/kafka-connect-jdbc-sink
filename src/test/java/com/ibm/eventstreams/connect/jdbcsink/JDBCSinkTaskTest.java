@@ -31,6 +31,9 @@ class JDBCSinkTaskTest {
         generalConnectorProps.put("connection.url", "jdbc:db2://localhost:50000/sample");
         generalConnectorProps.put("connection.user", "db2inst1");
         generalConnectorProps.put("connection.password", "password");
+
+        task.database = mock(IDatabase.class);
+        Mockito.when(task.database.getWriter()).thenReturn(mock(IDatabaseWriter.class));
     }
 
     @Test
@@ -60,9 +63,6 @@ class JDBCSinkTaskTest {
         // Create an empty collection of SinkRecords
         Collection<SinkRecord> records = Collections.emptyList();
 
-        task.database = mock(IDatabase.class);
-        Mockito.when(task.database.getWriter()).thenReturn(mock(IDatabaseWriter.class));
-
         // Call the put() method
         task.put(records);
 
@@ -73,8 +73,6 @@ class JDBCSinkTaskTest {
     @Test
     void testStop() {
         // Call the stop() method
-        task.database = mock(IDatabase.class);
-        Mockito.when(task.database.getWriter()).thenReturn(mock(IDatabaseWriter.class));
         task.stop();
 
         // Verify that no method invocations were made on the database writer
@@ -89,8 +87,6 @@ class JDBCSinkTaskTest {
         map.put(partition, new OffsetAndMetadata(0));
 
         // Call the flush() method
-        task.database = mock(IDatabase.class);
-        Mockito.when(task.database.getWriter()).thenReturn(mock(IDatabaseWriter.class));
         task.flush(map);
 
         // Verify that no method invocations were made on the database writer
@@ -100,28 +96,4 @@ class JDBCSinkTaskTest {
     private void verifyZeroInteractions(IDatabaseWriter writer) {
         verifyNoMoreInteractions(writer);
     }
-
-    // @Test
-    // void testPutSQLException() throws SQLException {
-    // // Create a collection of SinkRecords
-    // Collection<SinkRecord> records = new ArrayList<>();
-    // SinkRecord record = new SinkRecord("topic1", 0, null, null, null, null, 0);
-    // records.add(record);
-
-    // // Configure the configuration properties
-    // Map<String, String> props = generalConnectorProps;
-    // props.put("table.name.format", "mytable");
-
-    // // Call the put() method and expect an exception to be thrown
-    // task.start(props);
-
-    // // Set up the mock behavior to throw an exception
-    // task.database = mock(IDatabase.class);
-    // IDatabaseWriter iDatabaseWriterMock = mock(IDatabaseWriter.class);
-    // Mockito.when(task.database.getWriter()).thenReturn(iDatabaseWriterMock);
-    // doThrow(new SQLException("Write
-    // failed")).when(iDatabaseWriterMock).insert(any(), any());
-
-    // assertThrows(SQLException.class, () -> task.put(records));
-    // }
 }
