@@ -6,7 +6,6 @@ import org.apache.kafka.connect.connector.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +22,6 @@ class JDBCSinkConnectorTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
         connector = new JDBCSinkConnector();
     }
 
