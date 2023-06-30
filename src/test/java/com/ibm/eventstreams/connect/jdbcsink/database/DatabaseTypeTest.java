@@ -54,6 +54,6 @@ public class DatabaseTypeTest {
         // Test the getDriver method for each database type
         assertEquals("com.ibm.db2.jcc.DB2Driver", DatabaseType.db2.getDriver());
         assertEquals("org.postgresql.Driver", DatabaseType.postgresql.getDriver());
-        assertEquals("com.mysql.jdbc.Driver", DatabaseType.mysql.getDriver());
+        assertEquals("com.mysql.cj.jdbc.Driver", DatabaseType.mysql.getDriver());
     }
 }

@@ -40,7 +40,7 @@ public enum DatabaseType {
             return new RelationalDatabase(this, dataSource);
         }
     },
-    mysql("com.mysql.jdbc.Driver") {
+    mysql("com.mysql.cj.jdbc.Driver") {
         @Override public IDatabase create(IDataSource dataSource) {
             return new RelationalDatabase(this, dataSource);
         }
