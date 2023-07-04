@@ -1,11 +1,19 @@
 package com.ibm.eventstreams.connect.jdbcsink.database.writer;
 
-import org.apache.kafka.connect.data.*;
+import org.apache.kafka.connect.data.Schema;
+import org.apache.kafka.connect.data.SchemaBuilder;
+import org.apache.kafka.connect.data.Struct;
 import org.apache.kafka.connect.sink.SinkRecord;
 import org.junit.jupiter.api.Test;
 
 import com.ibm.db2.jcc.am.DatabaseMetaData;
 import com.ibm.eventstreams.connect.jdbcsink.database.datasource.IDataSource;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,7 +25,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mockito.Mockito.*;
 
 public class JDBCWriterTest {
 
@@ -41,8 +48,8 @@ public class JDBCWriterTest {
                         IDataSource dataSource = mock(IDataSource.class);
                         DatabaseMetaData databaseMetaData = mock(DatabaseMetaData.class);
                         PreparedStatement preparedStatement = mock(PreparedStatement.class);
-                        JDBCWriter jdbcWriter = new JDBCWriter(dataSource);
                         when(dataSource.getConnection()).thenReturn(connection);
+                        JDBCWriter jdbcWriter = new JDBCWriter(dataSource);
                         when(connection.prepareStatement(createTableStatements.get(database)))
                                         .thenReturn(preparedStatement);
                         when(connection.getMetaData()).thenReturn(databaseMetaData);
@@ -164,8 +171,8 @@ public class JDBCWriterTest {
                         PreparedStatement createPreparedStatement = mock(PreparedStatement.class);
                         PreparedStatement insertPreparedStatement = mock(PreparedStatement.class);
                         ResultSet resultSet = mock(ResultSet.class);
-                        JDBCWriter jdbcWriter = new JDBCWriter(dataSource);
                         when(dataSource.getConnection()).thenReturn(connection);
+                        JDBCWriter jdbcWriter = new JDBCWriter(dataSource);
                         when(connection.getMetaData()).thenReturn(databaseMetaData);
                         when(databaseMetaData.getTables(any(), any(), any(), any())).thenReturn(resultSet);
                         when(resultSet.next()).thenReturn(false);
