@@ -29,7 +29,7 @@ import java.util.Map;
 
 public class JDBCSinkConnector extends SinkConnector {
     // TODO: check with ibm-messaging about externalizing snapshot version
-    public static String VERSION = "0.0.2-SNAPSHOT";
+    public static String VERSION = "0.0.3-SNAPSHOT";
 
     private Map<String, String> props;
 

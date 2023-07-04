@@ -6,7 +6,7 @@
 
     <groupId>com.ibm.eventstreams.connect</groupId>
     <artifactId>kafka-connect-jdbc-sink</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
     <name>kafka-connect-jdbc-sink</name>
     <organization>
         <name>IBM Corporation</name>
@@ -109,6 +109,12 @@
             <groupId>com.ibm.db2</groupId>
             <artifactId>jcc</artifactId>
             <version>${jcc.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.30</version>
         </dependency>
 
         <dependency>
