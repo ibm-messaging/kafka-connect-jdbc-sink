@@ -1,4 +1,5 @@
 # Kafka Connect sink connector for JDBC
+
 kafka-connect-jdbc-sink is a [Kafka Connect](http://kafka.apache.org/documentation.html#connect) sink connector for copying data from Apache Kafka into a JDBC database.
 
 The connector is supplied as source code which you can easily build into a JAR file.
@@ -196,6 +197,9 @@ select * from company;
   1 | 1587969949600 | Roy Jones |  General Motors
 ```
 
+## Support
+
+Commercial support for this connector is available for customers with a support entitlement for [IBM Event Automation](https://www.ibm.com/products/event-automation) or [IBM Cloud Pak for Integration](https://www.ibm.com/cloud/cloud-pak-for-integration).
 
 ## Issues and contributions
 
@@ -204,7 +208,7 @@ For issues relating specifically to this connector, please use the [GitHub issue
 
 ## License
 
-Copyright 2020 IBM Corporation
+Copyright 2020, 2023 IBM Corporation
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
