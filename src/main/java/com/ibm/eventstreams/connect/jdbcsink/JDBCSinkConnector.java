@@ -29,7 +29,7 @@ import org.apache.kafka.connect.sink.SinkConnector;
 
 public class JDBCSinkConnector extends SinkConnector {
     // TODO: check with ibm-messaging about externalizing snapshot version
-    public static String VERSION = "0.0.3-SNAPSHOT";
+    public static String VERSION = "1.0.0-SNAPSHOT";
 
     private Map<String, String> props;
 
