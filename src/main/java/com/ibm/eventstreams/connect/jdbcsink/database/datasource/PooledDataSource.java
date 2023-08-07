@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2020 IBM Corporation
+ * Copyright 2020, 2023 IBM Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,11 @@
 
 package com.ibm.eventstreams.connect.jdbcsink.database.datasource;
 
-import com.mchange.v2.c3p0.ComboPooledDataSource;
-
 import java.beans.PropertyVetoException;
 import java.sql.Connection;
 import java.sql.SQLException;
+
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 /**
  * A data source backed by a connection pool.
@@ -31,12 +31,12 @@ public class PooledDataSource implements IDataSource {
     private ComboPooledDataSource dataSource;
 
     private PooledDataSource(
-            ComboPooledDataSource dataSource
-    )  {
+            ComboPooledDataSource dataSource) {
         this.dataSource = dataSource;
     }
 
-    @Override public Connection getConnection() throws SQLException {
+    @Override
+    public Connection getConnection() throws SQLException {
         return dataSource.getConnection();
     }
 
@@ -44,7 +44,8 @@ public class PooledDataSource implements IDataSource {
 
         private ComboPooledDataSource dataSource = new ComboPooledDataSource();
 
-        public Builder(final String username, final String password, final String jdbcUrl, final String driverClass) throws PropertyVetoException {
+        public Builder(final String username, final String password, final String jdbcUrl, final String driverClass)
+                throws PropertyVetoException {
             this.dataSource.setDriverClass(driverClass);
             this.dataSource.setJdbcUrl(jdbcUrl);
             this.dataSource.setUser(username);
@@ -60,7 +61,6 @@ public class PooledDataSource implements IDataSource {
             this.dataSource.setInitialPoolSize(poolSize);
             return this;
         }
-
 
     }
 }

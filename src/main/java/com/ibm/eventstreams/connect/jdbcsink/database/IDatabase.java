@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2020 IBM Corporation
+ * Copyright 2020, 2023 IBM Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,5 +22,6 @@ import com.ibm.eventstreams.connect.jdbcsink.database.writer.IDatabaseWriter;
 
 public interface IDatabase {
     IDatabaseWriter getWriter();
+
     DatabaseType getType();
 }
