@@ -34,7 +34,7 @@ mvn clean package
 7. Copy the compiled jar file into the `/usr/local/share/java/` directory:
 
 ```bash
-cp target/kafka-connect-jdbc-sink-0.0.2-SNAPSHOT-jar-with-dependencies.jar /usr/local/share/java/
+cp target/kafka-connect-jdbc-sink-1.0.0-SNAPSHOT-jar-with-dependencies.jar /usr/local/share/java/
 ```
 
 8. Copy the `connect-standalone.properties` and `jdbc-sink.properties` files into the `/usr/local/etc/kafka/` directory.
