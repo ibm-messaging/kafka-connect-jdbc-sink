@@ -1,18 +1,48 @@
+/*
+ *
+ * Copyright 2023 IBM Corporation
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
 package com.ibm.eventstreams.connect.jdbcsink;
 
-import com.ibm.eventstreams.connect.jdbcsink.database.IDatabase;
-import com.ibm.eventstreams.connect.jdbcsink.database.writer.IDatabaseWriter;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.connect.sink.SinkRecord;
 import org.apache.kafka.connect.sink.SinkTaskContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import java.sql.SQLException;
-import java.util.*;
 
-import static org.mockito.Mockito.*;
+import com.ibm.eventstreams.connect.jdbcsink.database.DatabaseFactory;
+import com.ibm.eventstreams.connect.jdbcsink.database.IDatabase;
+import com.ibm.eventstreams.connect.jdbcsink.database.writer.IDatabaseWriter;
 
 class JDBCSinkTaskTest {
 
@@ -22,7 +52,7 @@ class JDBCSinkTaskTest {
 
     @BeforeEach
     void setUp() {
-        task = new JDBCSinkTask();
+        task = spy(new JDBCSinkTask());
         context = mock(SinkTaskContext.class);
         task.initialize(context);
 
@@ -32,12 +62,16 @@ class JDBCSinkTaskTest {
         generalConnectorProps.put("connection.user", "db2inst1");
         generalConnectorProps.put("connection.password", "password");
 
-        task.database = mock(IDatabase.class);
-        Mockito.when(task.database.getWriter()).thenReturn(mock(IDatabaseWriter.class));
+        task.database = spy(IDatabase.class);
+        when(task.database.getWriter()).thenReturn(spy(IDatabaseWriter.class));
+
     }
 
     @Test
     void testPut() throws SQLException {
+        DatabaseFactory databaseFactoryMock = mock(DatabaseFactory.class);
+        when(task.getDatabaseFactory()).thenReturn(databaseFactoryMock);
+        when(databaseFactoryMock.makeDatabase(any(JDBCSinkConfig.class))).thenReturn(mock(IDatabase.class));
         // Call the put() method
         task.start(generalConnectorProps);
 
@@ -49,13 +83,13 @@ class JDBCSinkTaskTest {
         records.add(record2);
 
         task.database = mock(IDatabase.class);
-        Mockito.when(task.database.getWriter()).thenReturn(mock(IDatabaseWriter.class));
+        when(task.database.getWriter()).thenReturn(mock(IDatabaseWriter.class));
 
         task.put(records);
 
         // Verify the method invocations
         // verify(database.getWriter(), times(1)).insert("mytable", records);
-        verify(task.database.getWriter(), Mockito.times(1)).insert("schema.mytable", records);
+        verify(task.database.getWriter(), times(1)).insert("schema.mytable", records);
     }
 
     @Test

@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2020 IBM Corporation
+ * Copyright 2020, 2023 IBM Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,14 @@
 
 package com.ibm.eventstreams.connect.jdbcsink.database.writer;
 
-import com.ibm.eventstreams.connect.jdbcsink.JDBCSinkTask;
-import com.ibm.eventstreams.connect.jdbcsink.database.datasource.IDataSource;
+import java.sql.BatchUpdateException;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.kafka.connect.data.Field;
 import org.apache.kafka.connect.data.Schema;
 import org.apache.kafka.connect.data.Struct;
@@ -27,145 +33,30 @@ import org.apache.kafka.connect.sink.SinkRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.*;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.ibm.eventstreams.connect.jdbcsink.JDBCSinkTask;
+import com.ibm.eventstreams.connect.jdbcsink.database.builder.CommandBuilder;
+import com.ibm.eventstreams.connect.jdbcsink.database.datasource.IDataSource;
+import com.ibm.eventstreams.connect.jdbcsink.database.utils.DataSourceFactor;
 
 public class JDBCWriter implements IDatabaseWriter {
 
     private static final Logger logger = LoggerFactory.getLogger(JDBCSinkTask.class);
 
-    private final IDataSource dataSource;
+    private final DataSourceFactor dataSourceFactor;
+    private final CommandBuilder commandBuilder;
 
     public JDBCWriter(final IDataSource dataSource) {
-        this.dataSource = dataSource;
+        this.dataSourceFactor = new DataSourceFactor(dataSource);
+        this.commandBuilder = new CommandBuilder();
     }
 
-    private boolean doesTableExist(Connection connection, String tableName) throws SQLException {
-        String[] tableParts = tableName.split("\\.");
-        DatabaseMetaData dbm = connection.getMetaData();
-        ResultSet table = dbm.getTables(null, tableParts[0], tableParts[1], null);
-        return table.next();
-    }
+    public void createTable(String tableName, Schema schema) throws SQLException {
+        logger.trace("[{}] Entry {}.createTable, props={}", Thread.currentThread().getId(), this.getClass().getName());
 
-    private boolean isPostgreSQL(Connection connection) throws SQLException {
-        return connection.getMetaData().getDatabaseProductName().toLowerCase().contains("postgresql");
-    }
-
-    private boolean isDB2(Connection connection) throws SQLException {
-        return connection.getMetaData().getDatabaseProductName().toLowerCase().contains("db2");
-    }
-
-    private boolean isMySQL(Connection connection) throws SQLException {
-        return connection.getMetaData().getDatabaseProductName().toLowerCase().contains("mysql");
-    }
-
-    private String getPostgreSQLFieldType(Schema.Type fieldType) {
-        switch (fieldType) {
-            case INT8:
-            case INT16:
-            case INT32:
-                return "INTEGER";
-            case INT64:
-                return "BIGINT";
-            case FLOAT32:
-                return "REAL";
-            case FLOAT64:
-                return "DOUBLE PRECISION";
-            case BOOLEAN:
-                return "BOOLEAN";
-            case STRING:
-                return "VARCHAR(255)";
-            default:
-                return "VARCHAR(255)";
-        }
-    }
-
-    private String getDB2FieldType(Schema.Type fieldType) {
-        switch (fieldType) {
-            case INT8:
-            case INT16:
-            case INT32:
-                return "INTEGER";
-            case INT64:
-                return "BIGINT";
-            case FLOAT32:
-                return "REAL";
-            case FLOAT64:
-                return "DOUBLE";
-            case BOOLEAN:
-                return "BOOLEAN";
-            case STRING:
-                return "VARCHAR(255)";
-            default:
-                return "VARCHAR(255)";
-        }
-    }
-
-    private String getMySQLFieldType(Schema.Type fieldType) {
-        switch (fieldType) {
-            case INT8:
-            case INT16:
-            case INT32:
-                return "INT";
-            case INT64:
-                return "BIGINT";
-            case FLOAT32:
-                return "FLOAT";
-            case FLOAT64:
-                return "DOUBLE";
-            case BOOLEAN:
-                return "BOOLEAN";
-            case STRING:
-                return "VARCHAR(255)";
-            default:
-                return "VARCHAR(255)";
-        }
-    }
-
-    private String getIdColumnDefinition() {
-        try {
-            if (isPostgreSQL(dataSource.getConnection())) {
-                if (getPostgresMajorVersion() <= 9) {
-                    return "id SERIAL PRIMARY KEY";
-                } else {
-                    return "id INTEGER PRIMARY KEY GENERATED BY DEFAULT AS IDENTITY";
-                }
-            } else if (isDB2(dataSource.getConnection())) {
-                return "id INTEGER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY";
-            } else if (isMySQL(dataSource.getConnection())) {
-                return "id INTEGER PRIMARY KEY AUTO_INCREMENT";
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return "id INTEGER GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY";
-    }
-
-    private int getPostgresMajorVersion() {
-        Connection connection;
-        try {
-            connection = dataSource.getConnection();
-            DatabaseMetaData metaData = connection.getMetaData();
-            String databaseProductName = metaData.getDatabaseProductName();
-            if ("PostgreSQL".equals(databaseProductName)) {
-                int majorVersion = metaData.getDatabaseMajorVersion();
-                return majorVersion;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    public void createTable(Connection connection, String tableName, Schema schema) throws SQLException {
         final String CREATE_STATEMENT = "CREATE TABLE %s (%s)";
 
         StringBuilder fieldDefinitions = new StringBuilder();
-        fieldDefinitions.append(getIdColumnDefinition());
+        fieldDefinitions.append(commandBuilder.getIdColumnDefinition(dataSourceFactor));
 
         for (Field field : schema.fields()) {
             String fieldName = field.name();
@@ -173,13 +64,16 @@ public class JDBCWriter implements IDatabaseWriter {
             String nullable = field.schema().isOptional() ? "" : " NOT NULL";
 
             // Add field definitions based on database-specific data types
-            if (isPostgreSQL(connection)) {
+            if (dataSourceFactor.isPostgreSQL()) {
                 fieldDefinitions
-                        .append(String.format(", %s %s%s", fieldName, getPostgreSQLFieldType(fieldType), nullable));
-            } else if (isDB2(connection)) {
-                fieldDefinitions.append(String.format(", %s %s%s", fieldName, getDB2FieldType(fieldType), nullable));
-            } else if (isMySQL(connection)) {
-                fieldDefinitions.append(String.format(", %s %s%s", fieldName, getMySQLFieldType(fieldType), nullable));
+                        .append(String.format(", %s %s%s", fieldName, commandBuilder.getPostgreSQLFieldType(fieldType),
+                                nullable));
+            } else if (dataSourceFactor.isDB2()) {
+                fieldDefinitions.append(
+                        String.format(", %s %s%s", fieldName, commandBuilder.getDB2FieldType(fieldType), nullable));
+            } else if (dataSourceFactor.isMySQL()) {
+                fieldDefinitions.append(
+                        String.format(", %s %s%s", fieldName, commandBuilder.getMySQLFieldType(fieldType), nullable));
             } else {
                 throw new SQLException("Unsupported database type");
             }
@@ -191,40 +85,30 @@ public class JDBCWriter implements IDatabaseWriter {
         logger.debug("Field definitions: " + fieldDefinitions.toString());
         logger.debug("Final prepared statement: " + createTableSql);
 
-        try (PreparedStatement pstmt = connection.prepareStatement(createTableSql)) {
+        try (PreparedStatement pstmt = dataSourceFactor.prepareStatement(createTableSql)) {
             pstmt.execute();
         }
 
         logger.info("Table " + tableName + " has been created");
-    }
-
-    private String buildInsertStatement(String tableName, List<String> fieldNames) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("INSERT INTO ").append(tableName);
-        sb.append("(").append(String.join(", ", fieldNames)).append(")");
-        sb.append(" VALUES ");
-        sb.append("(").append(String.join(", ", Collections.nCopies(fieldNames.size(), "?"))).append(")");
-        return sb.toString();
+        logger.trace("[{}]  Exit {}.createTable", Thread.currentThread().getId(), this.getClass().getName());
     }
 
     @Override
     public void insert(String tableName, Collection<SinkRecord> records) throws SQLException {
-        Connection connection = null;
+        logger.trace("[{}] Entry {}.insert, props={}", Thread.currentThread().getId(), this.getClass().getName());
         try {
-            connection = this.dataSource.getConnection();
-
-            if (!doesTableExist(connection, tableName)) {
+            if (!dataSourceFactor.doesTableExist(tableName)) {
                 logger.info("Table not found. Creating table: " + tableName);
-                createTable(connection, tableName, records.iterator().next().valueSchema());
+                createTable(tableName, records.iterator().next().valueSchema());
             }
 
             List<String> fieldNames = records.iterator().next().valueSchema().fields().stream()
                     .map(Field::name)
                     .collect(Collectors.toList());
 
-            String insertStatement = buildInsertStatement(tableName, fieldNames);
+            String insertStatement = commandBuilder.buildInsertStatement(tableName, fieldNames);
             logger.debug("Insert Statement: {}", insertStatement);
-            PreparedStatement pstmt = connection.prepareStatement(insertStatement);
+            PreparedStatement pstmt = dataSourceFactor.prepareStatement(insertStatement);
 
             for (SinkRecord record : records) {
                 Struct recordValue = (Struct) record.value();
@@ -249,13 +133,13 @@ public class JDBCWriter implements IDatabaseWriter {
         } catch (BatchUpdateException batchUpdateException) {
             logger.error("SOME OPERATIONS IN BATCH FAILED");
             logger.error(batchUpdateException.toString());
-        } catch (SQLException sQLException) {
-            logger.error(sQLException.toString());
-            throw sQLException;
+            throw batchUpdateException;
+        } catch (SQLException sqlException) {
+            logger.error(sqlException.toString());
+            throw sqlException;
         } finally {
-            if (connection != null) {
-                connection.close();
-            }
+            dataSourceFactor.close();
         }
+        logger.trace("[{}]  Exit {}.insert", Thread.currentThread().getId(), this.getClass().getName());
     }
 }

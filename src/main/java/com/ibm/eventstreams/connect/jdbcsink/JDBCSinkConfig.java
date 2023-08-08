@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2020 IBM Corporation
+ * Copyright 2020, 2023 IBM Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,10 @@
 
 package com.ibm.eventstreams.connect.jdbcsink;
 
+import java.util.Map;
+
 import org.apache.kafka.common.config.AbstractConfig;
 import org.apache.kafka.common.config.ConfigDef;
-
-import java.util.Map;
 
 public class JDBCSinkConfig extends AbstractConfig {
 
@@ -49,7 +49,7 @@ public class JDBCSinkConfig extends AbstractConfig {
 
     public static final String CONFIG_NAME_INSERT_MODE_DATABASELEVEL = "insert.mode.databaselevel";
     private static final String CONFIG_DOCUMENTATION_INSERT_MODE_DATABASELEVEL = "The insertion mode to use (ex: insert, upsert, or update).";
-    private static final String CONFIG_DISPLAY_INSERT_MODE_DATABASELEVEL  = "Insert mode database level";
+    private static final String CONFIG_DISPLAY_INSERT_MODE_DATABASELEVEL = "Insert mode database level";
 
     public static ConfigDef config() {
         ConfigDef config = new ConfigDef();

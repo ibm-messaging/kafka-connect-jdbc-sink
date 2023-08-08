@@ -1,6 +1,6 @@
 /*
  *
- * Copyright 2020 IBM Corporation
+ * Copyright 2020, 2023 IBM Corporation
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@
 
 package com.ibm.eventstreams.connect.jdbcsink.database;
 
+import java.sql.SQLException;
+
 import com.ibm.eventstreams.connect.jdbcsink.database.datasource.IDataSource;
 import com.ibm.eventstreams.connect.jdbcsink.database.writer.IDatabaseWriter;
 import com.ibm.eventstreams.connect.jdbcsink.database.writer.JDBCWriter;
@@ -29,14 +31,16 @@ public class RelationalDatabase implements IDatabase {
 
     public RelationalDatabase(DatabaseType type, IDataSource dataSource) {
         this.type = type;
-        this.writer = new JDBCWriter(dataSource);;
+        this.writer = new JDBCWriter(dataSource);
     }
 
-    @Override public IDatabaseWriter getWriter() {
+    @Override
+    public IDatabaseWriter getWriter() {
         return this.writer;
     }
 
-    @Override public DatabaseType getType() {
+    @Override
+    public DatabaseType getType() {
         return this.type;
     }
 }
