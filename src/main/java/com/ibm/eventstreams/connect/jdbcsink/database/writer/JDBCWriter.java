@@ -40,7 +40,7 @@ import com.ibm.eventstreams.connect.jdbcsink.database.utils.DataSourceFactor;
 
 public class JDBCWriter implements IDatabaseWriter {
 
-    private static final Logger logger = LoggerFactory.getLogger(JDBCSinkTask.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JDBCSinkTask.class);
 
     private final DataSourceFactor dataSourceFactor;
     private final CommandBuilder commandBuilder;
@@ -50,18 +50,18 @@ public class JDBCWriter implements IDatabaseWriter {
         this.commandBuilder = new CommandBuilder();
     }
 
-    public void createTable(String tableName, Schema schema) throws SQLException {
-        logger.trace("[{}] Entry {}.createTable, props={}", Thread.currentThread().getId(), this.getClass().getName());
+    public void createTable(final String tableName, final Schema schema) throws SQLException {
+        LOGGER.trace("[{}] Entry {}.createTable, props={}", Thread.currentThread().getId(), this.getClass().getName());
 
-        final String CREATE_STATEMENT = "CREATE TABLE %s (%s)";
+        final String createStatement = "CREATE TABLE %s (%s)";
 
-        StringBuilder fieldDefinitions = new StringBuilder();
+        final StringBuilder fieldDefinitions = new StringBuilder();
         fieldDefinitions.append(commandBuilder.getIdColumnDefinition(dataSourceFactor));
 
-        for (Field field : schema.fields()) {
-            String fieldName = field.name();
-            Schema.Type fieldType = field.schema().type();
-            String nullable = field.schema().isOptional() ? "" : " NOT NULL";
+        for (final Field field : schema.fields()) {
+            final String fieldName = field.name();
+            final Schema.Type fieldType = field.schema().type();
+            final String nullable = field.schema().isOptional() ? "" : " NOT NULL";
 
             // Add field definitions based on database-specific data types
             if (dataSourceFactor.isPostgreSQL()) {
@@ -79,67 +79,67 @@ public class JDBCWriter implements IDatabaseWriter {
             }
         }
 
-        String createTableSql = String.format(CREATE_STATEMENT, tableName, fieldDefinitions.toString());
+        final String createTableSql = String.format(createStatement, tableName, fieldDefinitions.toString());
 
-        logger.debug("Creating table: " + tableName);
-        logger.debug("Field definitions: " + fieldDefinitions.toString());
-        logger.debug("Final prepared statement: " + createTableSql);
+        LOGGER.debug("Creating table: " + tableName);
+        LOGGER.debug("Field definitions: " + fieldDefinitions.toString());
+        LOGGER.debug("Final prepared statement: " + createTableSql);
 
         try (PreparedStatement pstmt = dataSourceFactor.prepareStatement(createTableSql)) {
             pstmt.execute();
         }
 
-        logger.info("Table " + tableName + " has been created");
-        logger.trace("[{}]  Exit {}.createTable", Thread.currentThread().getId(), this.getClass().getName());
+        LOGGER.info("Table " + tableName + " has been created");
+        LOGGER.trace("[{}]  Exit {}.createTable", Thread.currentThread().getId(), this.getClass().getName());
     }
 
     @Override
-    public void insert(String tableName, Collection<SinkRecord> records) throws SQLException {
-        logger.trace("[{}] Entry {}.insert, props={}", Thread.currentThread().getId(), this.getClass().getName());
+    public void insert(final String tableName, final Collection<SinkRecord> records) throws SQLException {
+        LOGGER.trace("[{}] Entry {}.insert, props={}", Thread.currentThread().getId(), this.getClass().getName());
         try {
             if (!dataSourceFactor.doesTableExist(tableName)) {
-                logger.info("Table not found. Creating table: " + tableName);
+                LOGGER.info("Table not found. Creating table: " + tableName);
                 createTable(tableName, records.iterator().next().valueSchema());
             }
 
-            List<String> fieldNames = records.iterator().next().valueSchema().fields().stream()
+            final List<String> fieldNames = records.iterator().next().valueSchema().fields().stream()
                     .map(Field::name)
                     .collect(Collectors.toList());
 
-            String insertStatement = commandBuilder.buildInsertStatement(tableName, fieldNames);
-            logger.debug("Insert Statement: {}", insertStatement);
-            PreparedStatement pstmt = dataSourceFactor.prepareStatement(insertStatement);
+            final String insertStatement = commandBuilder.buildInsertStatement(tableName, fieldNames);
+            LOGGER.debug("Insert Statement: {}", insertStatement);
+            final PreparedStatement pstmt = dataSourceFactor.prepareStatement(insertStatement);
 
-            for (SinkRecord record : records) {
-                Struct recordValue = (Struct) record.value();
+            for (final SinkRecord record : records) {
+                final Struct recordValue = (Struct) record.value();
 
-                List<Object> fieldValues = fieldNames.stream()
+                final List<Object> fieldValues = fieldNames.stream()
                         .map(fieldName -> recordValue.get(fieldName))
                         .collect(Collectors.toList());
 
-                logger.debug("Field values: {}", fieldValues);
+                LOGGER.debug("Field values: {}", fieldValues);
                 for (int i = 0; i < fieldValues.size(); i++) {
                     pstmt.setObject(i + 1, fieldValues.get(i));
                 }
 
                 pstmt.addBatch();
-                logger.debug("Record added to batch: {}", record.value());
+                LOGGER.debug("Record added to batch: {}", record.value());
             }
 
-            int[] batchResults = pstmt.executeBatch();
-            logger.debug("Batch execution results: {}", Arrays.toString(batchResults));
+            final int[] batchResults = pstmt.executeBatch();
+            LOGGER.debug("Batch execution results: {}", Arrays.toString(batchResults));
 
             pstmt.close();
-        } catch (BatchUpdateException batchUpdateException) {
-            logger.error("SOME OPERATIONS IN BATCH FAILED");
-            logger.error(batchUpdateException.toString());
+        } catch (final BatchUpdateException batchUpdateException) {
+            LOGGER.error("SOME OPERATIONS IN BATCH FAILED");
+            LOGGER.error(batchUpdateException.toString());
             throw batchUpdateException;
-        } catch (SQLException sqlException) {
-            logger.error(sqlException.toString());
+        } catch (final SQLException sqlException) {
+            LOGGER.error(sqlException.toString());
             throw sqlException;
         } finally {
             dataSourceFactor.close();
         }
-        logger.trace("[{}]  Exit {}.insert", Thread.currentThread().getId(), this.getClass().getName());
+        LOGGER.trace("[{}]  Exit {}.insert", Thread.currentThread().getId(), this.getClass().getName());
     }
 }

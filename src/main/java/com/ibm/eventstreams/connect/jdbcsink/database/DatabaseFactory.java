@@ -30,24 +30,24 @@ import com.ibm.eventstreams.connect.jdbcsink.database.exception.DatabaseNotSuppo
 import com.ibm.eventstreams.connect.jdbcsink.database.exception.JdbcDriverClassNotFoundException;
 
 public class DatabaseFactory {
-    private static final Logger logger = LoggerFactory.getLogger(DatabaseFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseFactory.class);
 
-    public IDatabase makeDatabase(JDBCSinkConfig config) {
+    public IDatabase makeDatabase(final JDBCSinkConfig config) {
 
-        logger.warn("DatabaseFactory: makeDatabase");
+        LOGGER.warn("DatabaseFactory: makeDatabase");
 
-        DatabaseType databaseType = getDatabaseType(config);
+        final DatabaseType databaseType = getDatabaseType(config);
 
-        String databaseDriver = getDatabaseDriver(databaseType);
+        final String databaseDriver = getDatabaseDriver(databaseType);
 
-        IDataSource dataSource = getDataSource(config, databaseDriver);
+        final IDataSource dataSource = getDataSource(config, databaseDriver);
 
         return databaseType.create(dataSource);
     }
 
-    private DatabaseType getDatabaseType(JDBCSinkConfig config) {
-        String jdbcUrl = config.getString(JDBCSinkConfig.CONFIG_NAME_CONNECTION_URL);
-        DatabaseType databaseType = DatabaseType.fromJdbcUrl(jdbcUrl);
+    private DatabaseType getDatabaseType(final JDBCSinkConfig config) {
+        final String jdbcUrl = config.getString(JDBCSinkConfig.CONFIG_NAME_CONNECTION_URL);
+        final DatabaseType databaseType = DatabaseType.fromJdbcUrl(jdbcUrl);
 
         if (databaseType == null) {
             throw new DatabaseNotSupportedException("Check " + jdbcUrl);
@@ -55,11 +55,11 @@ public class DatabaseFactory {
         return databaseType;
     }
 
-    private IDataSource getDataSource(JDBCSinkConfig config, String databaseDriver) {
+    private IDataSource getDataSource(final JDBCSinkConfig config, final String databaseDriver) {
         final String username = config.getString(JDBCSinkConfig.CONFIG_NAME_CONNECTION_USER);
         final String password = config.getPassword(JDBCSinkConfig.CONFIG_NAME_CONNECTION_PASSWORD).value();
         final int poolSize = config.getInt(JDBCSinkConfig.CONFIG_NAME_CONNECTION_DS_POOL_SIZE);
-        String jdbcUrl = config.getString(JDBCSinkConfig.CONFIG_NAME_CONNECTION_URL);
+        final String jdbcUrl = config.getString(JDBCSinkConfig.CONFIG_NAME_CONNECTION_URL);
 
         IDataSource dataSource = null;
         try {
@@ -68,18 +68,18 @@ public class DatabaseFactory {
                     password,
                     jdbcUrl,
                     databaseDriver).withInitialPoolSize(poolSize).build();
-        } catch (PropertyVetoException e) {
-            logger.error(e.toString());
+        } catch (final PropertyVetoException e) {
+            LOGGER.error(e.toString());
         }
         return dataSource;
     }
 
-    private String getDatabaseDriver(DatabaseType databaseType) {
-        String databaseDriver = databaseType.getDriver();
+    private String getDatabaseDriver(final DatabaseType databaseType) {
+        final String databaseDriver = databaseType.getDriver();
         try {
             Class.forName(databaseDriver);
-        } catch (ClassNotFoundException cnf) {
-            logger.error(databaseType.name() + " JDBC driver not found", cnf);
+        } catch (final ClassNotFoundException cnf) {
+            LOGGER.error(databaseType.name() + " JDBC driver not found", cnf);
             throw new JdbcDriverClassNotFoundException(databaseType.name());
         }
         return databaseDriver;

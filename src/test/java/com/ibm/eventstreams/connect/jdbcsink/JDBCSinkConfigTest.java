@@ -33,7 +33,7 @@ class JDBCSinkConfigTest {
     @Test
     void testValidConfig() {
         // Create a map with valid configuration properties
-        Map<String, String> props = new HashMap<>();
+        final Map<String, String> props = new HashMap<>();
         props.put("connection.url", "jdbc:mysql://localhost:3306/mydatabase");
         props.put("connection.user", "myuser");
         props.put("connection.password", "mypassword");
@@ -42,7 +42,7 @@ class JDBCSinkConfigTest {
         props.put("insert.mode.databaselevel", "true");
 
         // Create a new JDBCSinkConfig instance
-        JDBCSinkConfig config = new JDBCSinkConfig(props);
+        final JDBCSinkConfig config = new JDBCSinkConfig(props);
 
         // Verify the values of the configuration properties
         assertEquals("jdbc:mysql://localhost:3306/mydatabase", config.getString("connection.url"));
@@ -56,7 +56,7 @@ class JDBCSinkConfigTest {
     @Test
     void testMissingRequiredConfig() {
         // Create a map with missing required configuration properties
-        Map<String, String> props = new HashMap<>();
+        final Map<String, String> props = new HashMap<>();
         props.put("connection.url", "jdbc:mysql://localhost:3306/mydatabase");
         props.put("connection.user", "myuser");
         // Missing "connection.password" and "table.name.format"

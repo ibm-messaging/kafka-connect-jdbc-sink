@@ -19,7 +19,7 @@
 package com.ibm.eventstreams.connect.jdbcsink.database.exception;
 
 public class JdbcDriverClassNotFoundException extends RuntimeException {
-    public JdbcDriverClassNotFoundException(String message){
+    public JdbcDriverClassNotFoundException(final String message) {
         super(message);
     }
 }

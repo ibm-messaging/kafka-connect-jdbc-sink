@@ -18,8 +18,6 @@
 
 package com.ibm.eventstreams.connect.jdbcsink.database;
 
-import java.sql.SQLException;
-
 import com.ibm.eventstreams.connect.jdbcsink.database.datasource.IDataSource;
 import com.ibm.eventstreams.connect.jdbcsink.database.writer.IDatabaseWriter;
 import com.ibm.eventstreams.connect.jdbcsink.database.writer.JDBCWriter;
@@ -29,7 +27,7 @@ public class RelationalDatabase implements IDatabase {
     private final IDatabaseWriter writer;
     private final DatabaseType type;
 
-    public RelationalDatabase(DatabaseType type, IDataSource dataSource) {
+    public RelationalDatabase(final DatabaseType type, final IDataSource dataSource) {
         this.type = type;
         this.writer = new JDBCWriter(dataSource);
     }

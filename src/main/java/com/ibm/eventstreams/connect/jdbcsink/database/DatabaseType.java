@@ -19,6 +19,7 @@
 package com.ibm.eventstreams.connect.jdbcsink.database;
 
 import java.util.EnumSet;
+import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,19 +35,19 @@ import com.ibm.eventstreams.connect.jdbcsink.database.datasource.IDataSource;
 public enum DatabaseType {
     db2("com.ibm.db2.jcc.DB2Driver") {
         @Override
-        public IDatabase create(IDataSource dataSource) {
+        public IDatabase create(final IDataSource dataSource) {
             return new RelationalDatabase(this, dataSource);
         }
     },
     postgresql("org.postgresql.Driver") {
         @Override
-        public IDatabase create(IDataSource dataSource) {
+        public IDatabase create(final IDataSource dataSource) {
             return new RelationalDatabase(this, dataSource);
         }
     },
     mysql("com.mysql.cj.jdbc.Driver") {
         @Override
-        public IDatabase create(IDataSource dataSource) {
+        public IDatabase create(final IDataSource dataSource) {
             return new RelationalDatabase(this, dataSource);
         }
     };
@@ -54,7 +55,7 @@ public enum DatabaseType {
     private static final Logger log = LoggerFactory.getLogger(JDBCSinkConnector.class);
     private String driver;
 
-    DatabaseType(String value) {
+    DatabaseType(final String value) {
         this.driver = value;
     }
 
@@ -64,20 +65,20 @@ public enum DatabaseType {
      * @param connectionUrl the jdbc connection url
      * @return Optional<DatabaseType>
      */
-    public static DatabaseType fromJdbcUrl(String connectionUrl) {
-        final int STRING_SPLIT_LIMIT = 3;
-        final String JDBC_URL_DELIMITER = ":";
+    public static DatabaseType fromJdbcUrl(final String connectionUrl) {
+        final int stringSplitLimit = 3;
+        final String jdbcUrlDelimiter = ":";
 
-        final String[] urlSegments = connectionUrl.split(JDBC_URL_DELIMITER, STRING_SPLIT_LIMIT);
+        final String[] urlSegments = connectionUrl.split(jdbcUrlDelimiter, stringSplitLimit);
 
         DatabaseType type = null;
 
-        if (urlSegments.length == STRING_SPLIT_LIMIT) {
-            String matchedDatabaseType = urlSegments[STRING_SPLIT_LIMIT - 2];
+        if (urlSegments.length == stringSplitLimit) {
+            final String matchedDatabaseType = urlSegments[stringSplitLimit - 2];
             log.info("matchedType = " + matchedDatabaseType);
 
             type = EnumSet.allOf(DatabaseType.class).stream()
-                    .filter(t -> t.name().toLowerCase().equals(matchedDatabaseType))
+                    .filter(t -> t.name().toLowerCase(Locale.ENGLISH).equals(matchedDatabaseType))
                     .findFirst()
                     .orElse(null);
         }
