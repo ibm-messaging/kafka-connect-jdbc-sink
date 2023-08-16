@@ -46,29 +46,29 @@ public class DatabaseFactoryTest {
             throws DatabaseNotSupportedException, JdbcDriverClassNotFoundException, PropertyVetoException {
         // Set up the configuration
         // Configure the configuration properties
-        Map<String, String> props = new HashMap<>();
+        final Map<String, String> props = new HashMap<>();
 
         props.put("table.name.format", "schema.mytable");
         props.put("connection.user", "db2inst1");
         props.put("connection.password", "password");
 
-        for (String db : new String[] { "db2", "postgresql", "mysql", "sqlserver" }) {
+        for (final String db : new String[] {"db2", "postgresql", "mysql", "sqlserver"}) {
             props.put("connection.url", String.format("jdbc:%s://localhost:50000/sample", db));
             // Create the database factory
-            DatabaseFactory databaseFactory = new DatabaseFactory();
+            final DatabaseFactory databaseFactory = new DatabaseFactory();
 
-            JDBCSinkConfig config;
+            final JDBCSinkConfig config;
             config = new JDBCSinkConfig(props);
 
             // Verify that the database is a expected one
             if (db.equals("db2")) {
-                IDatabase database = databaseFactory.makeDatabase(config);
+                final IDatabase database = databaseFactory.makeDatabase(config);
                 assertEquals(DatabaseType.db2, database.getType());
             } else if (db.equals("mysql")) {
-                IDatabase database = databaseFactory.makeDatabase(config);
+                final IDatabase database = databaseFactory.makeDatabase(config);
                 assertEquals(DatabaseType.mysql, database.getType());
             } else if (db.equals("postgresql")) {
-                IDatabase database = databaseFactory.makeDatabase(config);
+                final IDatabase database = databaseFactory.makeDatabase(config);
                 assertEquals(DatabaseType.postgresql, database.getType());
             } else if (db.equals("sqlserver")) {
                 // catch DatabaseNotSupportedException
@@ -82,26 +82,26 @@ public class DatabaseFactoryTest {
     @Test
     public void testMakeDatabase() {
         // Prepare test data
-        JDBCSinkConfig config = mock(JDBCSinkConfig.class);
+        final JDBCSinkConfig config = mock(JDBCSinkConfig.class);
         when(config.getString(JDBCSinkConfig.CONFIG_NAME_CONNECTION_URL)).thenReturn("jdbc:db2://localhost:3306/test");
         when(config.getString(JDBCSinkConfig.CONFIG_NAME_CONNECTION_USER)).thenReturn("username");
         when(config.getPassword(JDBCSinkConfig.CONFIG_NAME_CONNECTION_PASSWORD)).thenReturn(new Password("password"));
         when(config.getInt(JDBCSinkConfig.CONFIG_NAME_CONNECTION_DS_POOL_SIZE)).thenReturn(10);
 
         // Create a mock for the IDataSource
-        IDataSource dataSource = mock(IDataSource.class);
+        final IDataSource dataSource = mock(IDataSource.class);
 
         // Create a mock for the DatabaseType
-        DatabaseType databaseType = mock(DatabaseType.class);
+        final DatabaseType databaseType = mock(DatabaseType.class);
         when(databaseType.getDriver()).thenReturn("com.ibm.db2.jcc.DB2Driver");
         when(databaseType.create(dataSource)).thenReturn(mock(IDatabase.class));
 
         // Create a mock for the DatabaseFactory
-        DatabaseFactory databaseFactory = mock(DatabaseFactory.class);
+        final DatabaseFactory databaseFactory = mock(DatabaseFactory.class);
         doCallRealMethod().when(databaseFactory).makeDatabase(config);
 
         // Test the makeDatabase method
-        IDatabase database = databaseFactory.makeDatabase(config);
+        final IDatabase database = databaseFactory.makeDatabase(config);
 
         // Verify the interactions and assertions
         verify(config, times(2)).getString(JDBCSinkConfig.CONFIG_NAME_CONNECTION_URL);

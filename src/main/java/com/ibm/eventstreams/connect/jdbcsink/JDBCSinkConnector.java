@@ -29,7 +29,7 @@ import org.apache.kafka.connect.sink.SinkConnector;
 
 public class JDBCSinkConnector extends SinkConnector {
     // TODO: check with ibm-messaging about externalizing snapshot version
-    public static String VERSION = "1.0.0-SNAPSHOT";
+    public static String version = "1.0.0-SNAPSHOT";
 
     private Map<String, String> props;
 
@@ -40,7 +40,7 @@ public class JDBCSinkConnector extends SinkConnector {
      */
     @Override
     public String version() {
-        return VERSION;
+        return version;
     }
 
     /**
@@ -51,7 +51,7 @@ public class JDBCSinkConnector extends SinkConnector {
      * @param props configuration settings
      */
     @Override
-    public void start(Map<String, String> props) {
+    public void start(final Map<String, String> props) {
         this.props = props;
     }
 
@@ -71,7 +71,7 @@ public class JDBCSinkConnector extends SinkConnector {
      * @return configurations for Tasks
      */
     @Override
-    public List<Map<String, String>> taskConfigs(int maxTasks) {
+    public List<Map<String, String>> taskConfigs(final int maxTasks) {
         return Collections.nCopies(maxTasks, props);
     }
 
@@ -102,7 +102,7 @@ public class JDBCSinkConnector extends SinkConnector {
      * @return list of allowed configurations
      */
     @Override
-    public Config validate(Map<String, String> connectorConfigs) {
+    public Config validate(final Map<String, String> connectorConfigs) {
         return super.validate(connectorConfigs);
     }
 

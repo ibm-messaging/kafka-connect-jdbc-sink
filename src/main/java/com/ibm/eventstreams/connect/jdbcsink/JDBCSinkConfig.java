@@ -52,7 +52,7 @@ public class JDBCSinkConfig extends AbstractConfig {
     private static final String CONFIG_DISPLAY_INSERT_MODE_DATABASELEVEL = "Insert mode database level";
 
     public static ConfigDef config() {
-        ConfigDef config = new ConfigDef();
+        final ConfigDef config = new ConfigDef();
 
         config.define(CONFIG_NAME_CONNECTION_URL,
                 ConfigDef.Type.STRING,

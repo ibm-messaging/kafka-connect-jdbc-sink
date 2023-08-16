@@ -33,10 +33,10 @@ public class DatabaseTypeTest {
     @Test
     public void testFromJdbcUrl_ValidUrl_ReturnsCorrectDatabaseType() {
         // Prepare test data
-        String connectionUrl = "jdbc:postgresql://localhost:5432/mydatabase";
+        final String connectionUrl = "jdbc:postgresql://localhost:5432/mydatabase";
 
         // Test the fromJdbcUrl method
-        DatabaseType result = DatabaseType.fromJdbcUrl(connectionUrl);
+        final DatabaseType result = DatabaseType.fromJdbcUrl(connectionUrl);
 
         // Verify the result
         assertEquals(DatabaseType.postgresql, result);
@@ -45,10 +45,10 @@ public class DatabaseTypeTest {
     @Test
     public void testFromJdbcUrl_InvalidUrl_ReturnsNull() {
         // Prepare test data
-        String connectionUrl = "jdbc:oracle://localhost:1521/mydatabase";
+        final String connectionUrl = "jdbc:oracle://localhost:1521/mydatabase";
 
         // Test the fromJdbcUrl method
-        DatabaseType result = DatabaseType.fromJdbcUrl(connectionUrl);
+        final DatabaseType result = DatabaseType.fromJdbcUrl(connectionUrl);
 
         // Verify the result
         assertNull(result);
@@ -57,11 +57,11 @@ public class DatabaseTypeTest {
     @Test
     public void testCreate_ValidDataSource_ReturnsRelationalDatabase() {
         // Prepare test data
-        IDataSource dataSource = mock(IDataSource.class);
+        final IDataSource dataSource = mock(IDataSource.class);
 
         // Test the create method for each database type
-        for (DatabaseType databaseType : DatabaseType.values()) {
-            IDatabase result = databaseType.create(dataSource);
+        for (final DatabaseType databaseType : DatabaseType.values()) {
+            final IDatabase result = databaseType.create(dataSource);
 
             // Verify the result
             assertNotNull(result);

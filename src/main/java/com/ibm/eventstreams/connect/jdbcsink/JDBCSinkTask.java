@@ -38,8 +38,8 @@ import com.ibm.eventstreams.connect.jdbcsink.database.DatabaseFactory;
 import com.ibm.eventstreams.connect.jdbcsink.database.IDatabase;
 
 public class JDBCSinkTask extends SinkTask {
-    private static final Logger logger = LoggerFactory.getLogger(JDBCSinkTask.class);
-    private static final String classname = JDBCSinkTask.class.getName();
+    private static final Logger LOGGER = LoggerFactory.getLogger(JDBCSinkTask.class);
+    private static final String CLASSNAME = JDBCSinkTask.class.getName();
 
     // TODO: needs to be generic and incorporate other database types
     // needs an interface
@@ -56,23 +56,23 @@ public class JDBCSinkTask extends SinkTask {
      * @param props initial configuration
      */
     @Override
-    public void start(Map<String, String> props) {
-        logger.trace("[{}] Entry {}.start, props={}", Thread.currentThread().getId(), classname, props);
+    public void start(final Map<String, String> props) {
+        LOGGER.trace("[{}] Entry {}.start, props={}", Thread.currentThread().getId(), CLASSNAME, props);
         this.config = new JDBCSinkConfig(props);
 
-        DatabaseFactory databaseFactory = getDatabaseFactory();
+        final DatabaseFactory databaseFactory = getDatabaseFactory();
         try {
             this.database = databaseFactory.makeDatabase(this.config);
-        } catch (Exception e) {
-            logger.error("Failed to build the database {} ", e);
+        } catch (final Exception e) {
+            LOGGER.error("Failed to build the database {} ", e);
             throw new ConnectException(e);
         }
 
-        logger.trace("[{}]  Exit {}.start", Thread.currentThread().getId(), classname);
+        LOGGER.trace("[{}]  Exit {}.start", Thread.currentThread().getId(), CLASSNAME);
     }
 
     protected DatabaseFactory getDatabaseFactory() {
-        DatabaseFactory databaseFactory = new DatabaseFactory();
+        final DatabaseFactory databaseFactory = new DatabaseFactory();
         return databaseFactory;
     }
 
@@ -89,37 +89,37 @@ public class JDBCSinkTask extends SinkTask {
      * @param records the set of records to send
      */
     @Override
-    public void put(Collection<SinkRecord> records) {
-        logger.trace("[{}] Entry {}.put", Thread.currentThread().getId(), classname);
+    public void put(final Collection<SinkRecord> records) {
+        LOGGER.trace("[{}] Entry {}.put", Thread.currentThread().getId(), CLASSNAME);
         if (records.isEmpty()) {
             return;
         }
 
         final SinkRecord first = records.iterator().next();
         final int recordsCount = records.size();
-        logger.info("Received {} records. First record kafka coordinates:({}-{}-{}). Writing them to the database...",
+        LOGGER.info("Received {} records. First record kafka coordinates:({}-{}-{}). Writing them to the database...",
                 recordsCount, first.topic(), first.kafkaPartition(), first.kafkaOffset());
 
         final String tableName = config.getString(JDBCSinkConfig.CONFIG_NAME_TABLE_NAME_FORMAT);
 
-        logger.info("# of records: " + records.size());
+        LOGGER.info("# of records: " + records.size());
         try {
-            Instant start = Instant.now();
+            final Instant start = Instant.now();
             this.database.getWriter().insert(tableName, records);
-            logger.info(String.format("%d RECORDS PROCESSED", records.size()));
-            Instant finish = Instant.now();
-            long timeElapsed = Duration.between(start, finish).toMillis(); // in millis
-            logger.info(String.format("Processed '%d' records", records.size()));
-            logger.info(String.format("Total Execution time: %d", timeElapsed));
-        } catch (SQLException error) {
-            logger.error("Write of {} records failed, remainingRetries={}", recordsCount, remainingRetries, error);
+            LOGGER.info(String.format("%d RECORDS PROCESSED", records.size()));
+            final Instant finish = Instant.now();
+            final long timeElapsed = Duration.between(start, finish).toMillis(); // in millis
+            LOGGER.info(String.format("Processed '%d' records", records.size()));
+            LOGGER.info(String.format("Total Execution time: %d", timeElapsed));
+        } catch (final SQLException error) {
+            LOGGER.error("Write of {} records failed, remainingRetries={}", recordsCount, remainingRetries, error);
             throw new ConnectException(error);
         } catch (final RuntimeException e) {
-            logger.error("Unexpected runtime exception: ", e);
+            LOGGER.error("Unexpected runtime exception: ", e);
             throw e;
         }
 
-        logger.trace("[{}] Exit {}.put", Thread.currentThread().getId(), classname);
+        LOGGER.trace("[{}] Exit {}.put", Thread.currentThread().getId(), CLASSNAME);
     }
 
     @Override
@@ -127,7 +127,7 @@ public class JDBCSinkTask extends SinkTask {
     }
 
     @Override
-    public void flush(Map<TopicPartition, OffsetAndMetadata> map) {
+    public void flush(final Map<TopicPartition, OffsetAndMetadata> map) {
         // Not necessary
     }
 

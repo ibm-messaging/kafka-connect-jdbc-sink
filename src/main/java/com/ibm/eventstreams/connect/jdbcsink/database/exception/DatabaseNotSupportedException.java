@@ -19,7 +19,7 @@
 package com.ibm.eventstreams.connect.jdbcsink.database.exception;
 
 public class DatabaseNotSupportedException extends RuntimeException {
-    public DatabaseNotSupportedException(String message){
+    public DatabaseNotSupportedException(final String message) {
         super(message);
     }
 }

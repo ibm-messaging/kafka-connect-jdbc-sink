@@ -69,16 +69,16 @@ class JDBCSinkTaskTest {
 
     @Test
     void testPut() throws SQLException {
-        DatabaseFactory databaseFactoryMock = mock(DatabaseFactory.class);
+        final DatabaseFactory databaseFactoryMock = mock(DatabaseFactory.class);
         when(task.getDatabaseFactory()).thenReturn(databaseFactoryMock);
         when(databaseFactoryMock.makeDatabase(any(JDBCSinkConfig.class))).thenReturn(mock(IDatabase.class));
         // Call the put() method
         task.start(generalConnectorProps);
 
         // Create a collection of SinkRecords
-        Collection<SinkRecord> records = new ArrayList<>();
-        SinkRecord record1 = new SinkRecord("topic1", 0, null, null, null, null, 0);
-        SinkRecord record2 = new SinkRecord("topic1", 1, null, null, null, null, 1);
+        final Collection<SinkRecord> records = new ArrayList<>();
+        final SinkRecord record1 = new SinkRecord("topic1", 0, null, null, null, null, 0);
+        final SinkRecord record2 = new SinkRecord("topic1", 1, null, null, null, null, 1);
         records.add(record1);
         records.add(record2);
 
@@ -95,7 +95,7 @@ class JDBCSinkTaskTest {
     @Test
     void testPutEmptyRecords() {
         // Create an empty collection of SinkRecords
-        Collection<SinkRecord> records = Collections.emptyList();
+        final Collection<SinkRecord> records = Collections.emptyList();
 
         // Call the put() method
         task.put(records);
@@ -116,8 +116,8 @@ class JDBCSinkTaskTest {
     @Test
     void testFlush() {
         // Create a map of topic partitions and offsets
-        Map<TopicPartition, OffsetAndMetadata> map = new HashMap<>();
-        TopicPartition partition = new TopicPartition("topic1", 0);
+        final Map<TopicPartition, OffsetAndMetadata> map = new HashMap<>();
+        final TopicPartition partition = new TopicPartition("topic1", 0);
         map.put(partition, new OffsetAndMetadata(0));
 
         // Call the flush() method
@@ -127,7 +127,7 @@ class JDBCSinkTaskTest {
         verifyZeroInteractions(task.database.getWriter());
     }
 
-    private void verifyZeroInteractions(IDatabaseWriter writer) {
+    private void verifyZeroInteractions(final IDatabaseWriter writer) {
         verifyNoMoreInteractions(writer);
     }
 }

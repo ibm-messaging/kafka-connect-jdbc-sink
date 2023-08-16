@@ -31,30 +31,30 @@ class DatabaseTypeTest {
 
         @Test
         void shouldReturnDatabaseTypeForValidJdbcUrl() {
-            String databaseType = "postgresql";
-            String connectionUrl = String.format("jdbc:%s://127.0.0.1:5432/blah", databaseType);
+            final String databaseType = "postgresql";
+            final String connectionUrl = String.format("jdbc:%s://127.0.0.1:5432/blah", databaseType);
 
-            DatabaseType type = DatabaseType.fromJdbcUrl(connectionUrl);
+            final DatabaseType type = DatabaseType.fromJdbcUrl(connectionUrl);
 
             assertEquals(type, DatabaseType.postgresql);
         }
 
         @Test
         void shouldReturnNullForInValidJdbcUrl() {
-            String databaseType = "postgresql";
-            String connectionUrl = String.format("jdbc://", databaseType);
+            final String databaseType = "postgresql";
+            final String connectionUrl = String.format("jdbc://", databaseType);
 
-            DatabaseType type = DatabaseType.fromJdbcUrl(connectionUrl);
+            final DatabaseType type = DatabaseType.fromJdbcUrl(connectionUrl);
 
             assertEquals(type, null);
         }
 
         @Test
         void shouldReturnNullForANotSupportedDatabaseType() {
-            String databaseType = "not supported";
-            String connectionUrl = String.format("jdbc:%s://127.0.0.1:5432/blah", databaseType);
+            final String databaseType = "not supported";
+            final String connectionUrl = String.format("jdbc:%s://127.0.0.1:5432/blah", databaseType);
 
-            DatabaseType type = DatabaseType.fromJdbcUrl(connectionUrl);
+            final DatabaseType type = DatabaseType.fromJdbcUrl(connectionUrl);
 
             assertEquals(type, null);
         }

@@ -31,7 +31,7 @@ public class PooledDataSource implements IDataSource {
     private ComboPooledDataSource dataSource;
 
     private PooledDataSource(
-            ComboPooledDataSource dataSource) {
+            final ComboPooledDataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -57,7 +57,7 @@ public class PooledDataSource implements IDataSource {
         }
 
         // Optional configurable methods...
-        public Builder withInitialPoolSize(int poolSize) {
+        public Builder withInitialPoolSize(final int poolSize) {
             this.dataSource.setInitialPoolSize(poolSize);
             return this;
         }
