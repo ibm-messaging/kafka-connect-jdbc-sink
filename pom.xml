@@ -86,7 +86,7 @@
     </repositories>
 
     <properties>
-        <postgresql.version>42.6.0</postgresql.version>
+        <postgresql.version>42.7.2</postgresql.version>
         <kafka.version>3.4.0</kafka.version>
         <jcc.version>11.5.8.0</jcc.version>
         <c3p0.version>0.9.1.2</c3p0.version>
